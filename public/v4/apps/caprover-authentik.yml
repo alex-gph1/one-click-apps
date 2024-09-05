@@ -7,31 +7,31 @@ services:
         restart: unless-stopped
         command: ["dumb-init", "--", "ak", "server"]
         environment:
-        AUTHENTIK_BOOTSTRAP_PASSWORD: $$cap_authentik_password
-        AUTHENTIK_BOOTSTRAP_TOKEN: $$cap_authentik_token
-        AUTHENTIK_BOOTSTRAP_EMAIL: $$cap_authentik_email
-        AUTHENTIK_SECRET_KEY: $$cap_secret_key
-        AUTHENTIK_REDIS__HOST: srv-captain--$$cap_appname-redis
-        #AUTHENTIK_REDIS__PORT: 
-        #AUTHENTIK_REDIS__DB: 
-        #AUTHENTIK_REDIS__PASSWORD: 
-        AUTHENTIK_POSTGRESQL__HOST: srv-captain--$$cap_appname-postgres
-        AUTHENTIK_POSTGRESQL__USER: $$cap_pg_user
-        AUTHENTIK_POSTGRESQL__NAME: $$cap_pg_db
-        AUTHENTIK_POSTGRESQL__PASSWORD: $$cap_pg_pass
-        # SMTP Host Emails are sent to
-        #AUTHENTIK_EMAIL__HOST: 
-        #AUTHENTIK_EMAIL__PORT: 
-        # Optionally authenticate (don't add quotation marks to your password)
-        #AUTHENTIK_EMAIL__USERNAME: 
-        #AUTHENTIK_EMAIL__PASSWORD: 
-        # Use StartTLS
-        #AUTHENTIK_EMAIL__USE_TLS: 
-        # Use SSL
-        #AUTHENTIK_EMAIL__USE_SSL: 
-        #AUTHENTIK_EMAIL__TIMEOUT: 
-        # Email address authentik will send from, should have a correct @domain
-        #AUTHENTIK_EMAIL__FROM: 
+          AUTHENTIK_BOOTSTRAP_PASSWORD: $$cap_authentik_password
+          AUTHENTIK_BOOTSTRAP_TOKEN: $$cap_authentik_token
+          AUTHENTIK_BOOTSTRAP_EMAIL: $$cap_authentik_email
+          AUTHENTIK_SECRET_KEY: $$cap_secret_key
+          AUTHENTIK_REDIS__HOST: srv-captain--$$cap_appname-redis
+          #AUTHENTIK_REDIS__PORT: 
+          #AUTHENTIK_REDIS__DB: 
+          #AUTHENTIK_REDIS__PASSWORD: 
+          AUTHENTIK_POSTGRESQL__HOST: srv-captain--$$cap_appname-postgres
+          AUTHENTIK_POSTGRESQL__USER: $$cap_pg_user
+          AUTHENTIK_POSTGRESQL__NAME: $$cap_pg_db
+          AUTHENTIK_POSTGRESQL__PASSWORD: $$cap_pg_pass
+          # SMTP Host Emails are sent to
+          #AUTHENTIK_EMAIL__HOST: 
+          #AUTHENTIK_EMAIL__PORT: 
+          # Optionally authenticate (don't add quotation marks to your password)
+          #AUTHENTIK_EMAIL__USERNAME: 
+          #AUTHENTIK_EMAIL__PASSWORD: 
+          # Use StartTLS
+          #AUTHENTIK_EMAIL__USE_TLS: 
+          # Use SSL
+          #AUTHENTIK_EMAIL__USE_SSL: 
+          #AUTHENTIK_EMAIL__TIMEOUT: 
+          # Email address authentik will send from, should have a correct @domain
+          #AUTHENTIK_EMAIL__FROM: 
     #    volumes:
     #      - $$cap_appname-media:/media
     #      - $$cap_appname-custom-templates:/templates
@@ -49,37 +49,37 @@ services:
         restart: unless-stopped
         command: ["dumb-init", "--", "ak", "worker"]
         environment:
-        AUTHENTIK_BOOTSTRAP_PASSWORD: $$cap_authentik_password
-        AUTHENTIK_BOOTSTRAP_TOKEN: $$cap_authentik_token
-        AUTHENTIK_BOOTSTRAP_EMAIL: $$cap_authentik_email
-        AUTHENTIK_SECRET_KEY: 
-        AUTHENTIK_REDIS__HOST: srv-captain--$$cap_appname-redis
-        #AUTHENTIK_REDIS__PORT: 
-        #AUTHENTIK_REDIS__DB: 
-        #AUTHENTIK_REDIS__PASSWORD: 
-        AUTHENTIK_POSTGRESQL__HOST: srv-captain--$$cap_appname-postgres
-        AUTHENTIK_POSTGRESQL__USER: $$cap_pg_user
-        AUTHENTIK_POSTGRESQL__NAME: $$cap_pg_db
-        AUTHENTIK_POSTGRESQL__PASSWORD: $$cap_pg_pass
-        # SMTP Host Emails are sent to
-        #AUTHENTIK_EMAIL__HOST: 
-        #AUTHENTIK_EMAIL__PORT: 
-        # Optionally authenticate (don't add quotation marks to your password)
-        #AUTHENTIK_EMAIL__USERNAME: 
-        #AUTHENTIK_EMAIL__PASSWORD: 
-        # Use StartTLS
-        #AUTHENTIK_EMAIL__USE_TLS: 
-        # Use SSL
-        #AUTHENTIK_EMAIL__USE_SSL: 
-        #AUTHENTIK_EMAIL__TIMEOUT: 
-        # Email address authentik will send from, should have a correct @domain
-        #AUTHENTIK_EMAIL__FROM: 
-        # `user: root` and the docker socket volume are optional.
-        # See more for the docker socket integration here:
-        # https://goauthentik.io/docs/outposts/integrations/docker
-        # Removing `user: root` also prevents the worker from fixing the permissions
-        # on the mounted folders, so when removing this make sure the folders have the correct UID/GID
-        # (1000:1000 by default)
+          AUTHENTIK_BOOTSTRAP_PASSWORD: $$cap_authentik_password
+          AUTHENTIK_BOOTSTRAP_TOKEN: $$cap_authentik_token
+          AUTHENTIK_BOOTSTRAP_EMAIL: $$cap_authentik_email
+          AUTHENTIK_SECRET_KEY: 
+          AUTHENTIK_REDIS__HOST: srv-captain--$$cap_appname-redis
+          #AUTHENTIK_REDIS__PORT: 
+          #AUTHENTIK_REDIS__DB: 
+          #AUTHENTIK_REDIS__PASSWORD: 
+          AUTHENTIK_POSTGRESQL__HOST: srv-captain--$$cap_appname-postgres
+          AUTHENTIK_POSTGRESQL__USER: $$cap_pg_user
+          AUTHENTIK_POSTGRESQL__NAME: $$cap_pg_db
+          AUTHENTIK_POSTGRESQL__PASSWORD: $$cap_pg_pass
+          # SMTP Host Emails are sent to
+          #AUTHENTIK_EMAIL__HOST: 
+          #AUTHENTIK_EMAIL__PORT: 
+          # Optionally authenticate (don't add quotation marks to your password)
+          #AUTHENTIK_EMAIL__USERNAME: 
+          #AUTHENTIK_EMAIL__PASSWORD: 
+          # Use StartTLS
+          #AUTHENTIK_EMAIL__USE_TLS: 
+          # Use SSL
+          #AUTHENTIK_EMAIL__USE_SSL: 
+          #AUTHENTIK_EMAIL__TIMEOUT: 
+          # Email address authentik will send from, should have a correct @domain
+          #AUTHENTIK_EMAIL__FROM: 
+          # `user: root` and the docker socket volume are optional.
+          # See more for the docker socket integration here:
+          # https://goauthentik.io/docs/outposts/integrations/docker
+          # Removing `user: root` also prevents the worker from fixing the permissions
+          # on the mounted folders, so when removing this make sure the folders have the correct UID/GID
+          # (1000:1000 by default)
         user: root #Looks like it doesn't work
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
