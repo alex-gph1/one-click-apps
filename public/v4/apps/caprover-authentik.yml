@@ -127,7 +127,11 @@ caproverOneClickApp:
         end: |-
             Authentik has been successfully deployed. Now wait up to 5-10 mins, before it initializes.
             IMPORTANT! To finish the setup and enable access to Authentik at `http://$$cap_appname.$$cap_root_domain`, you need to configure NGINX.
-            Copy the configuration from here 
+            Before proceeding please wait 5 to 10 minutes to let Authentik finalize initialization process.
+            Copy the configuration from here https://github.com/alex-gph1/one-click-apps/blob/eed06fbaec5cebfafafa7c19778b7446e67efa81/misc/caprover-nginx-authentik.conf
+            In another browser tab open your new Authentik app in Caprover and click on Edit Default Nginx Configurations. Paste the configuration there instead of the default https://github.com/alex-gph1/one-click-apps/blob/eed06fbaec5cebfafafa7c19778b7446e67efa81/misc/caprover-nginx-authentik.conf
+            Click Save & Restart. Now everything should be ready. Login using AKADMIN username and the password you set up earlier.
+
         variables:
             - id: $$cap_authentik_image
             label: Authentik Image
