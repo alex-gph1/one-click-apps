@@ -40,8 +40,8 @@ services:
             - $$cap_appname-redis
             - $$cap_appname-worker
         caproverExtra:
-        containerHttpPort: '9000'
-        websocketSupport: 'true'
+            containerHttpPort: '9000'
+            websocketSupport: 'true'
 
     # Worker
     $$cap_appname-worker:
@@ -52,7 +52,7 @@ services:
           AUTHENTIK_BOOTSTRAP_PASSWORD: $$cap_authentik_password
           AUTHENTIK_BOOTSTRAP_TOKEN: $$cap_authentik_token
           AUTHENTIK_BOOTSTRAP_EMAIL: $$cap_authentik_email
-          AUTHENTIK_SECRET_KEY: 
+          AUTHENTIK_SECRET_KEY: $$cap_secret_key
           AUTHENTIK_REDIS__HOST: srv-captain--$$cap_appname-redis
           #AUTHENTIK_REDIS__PORT: 
           #AUTHENTIK_REDIS__DB: 
