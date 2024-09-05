@@ -132,63 +132,64 @@ caproverOneClickApp:
             In another browser tab open your new Authentik app in Caprover and click on Edit Default Nginx Configurations. Paste the configuration there instead of the default https://github.com/alex-gph1/one-click-apps/blob/eed06fbaec5cebfafafa7c19778b7446e67efa81/misc/caprover-nginx-authentik.conf
             Click Save & Restart. Now everything should be ready. Login using AKADMIN username and the password you set up earlier.
 
-        variables:
-            - id: $$cap_authentik_image
-            label: Authentik Image
-            defaultValue: 'ghcr.io/goauthentik/server'
-            validRegex: /.{1,}/
 
-            - id: $$cap_authentik_tag
-            label: Authentik Tag
-            description: Set the tag to use for the Authentik image. View the available tags here https://github.com/goauthentik/authentik/pkgs/container/server
-            defaultValue: '2024.8.0'
-            validRegex: /.{1,}/
+    variables:
+        - id: $$cap_authentik_image
+          label: Authentik Image
+          defaultValue: 'ghcr.io/goauthentik/server'
+          validRegex: /.{1,}/
 
-            - id: $$cap_secret_key
-            label: Authentik Secret Key
-            description: Secret key used for cookie signing. Changing this will invalidate active sessions.
-            defaultValue: $$cap_gen_random_hex(80)
-            validRegex: /.{1,}/
+        - id: $$cap_authentik_tag
+          label: Authentik Tag
+          description: Set the tag to use for the Authentik image. View the available tags here https://github.com/goauthentik/authentik/pkgs/container/server
+          defaultValue: '2024.8.0'
+          validRegex: /.{1,}/
 
-            - id: $$cap_authentik_password
-            label: Authentik Bootstrap Admin Password
-            description: Configure the default password for the AKADMIN user. Only read on the first startup. Can be used for any flow executor.
-            defaultValue: $$cap_gen_random_hex(32)
-            validRegex: /.{1,}/
+        - id: $$cap_secret_key
+          label: Authentik Secret Key
+          description: Secret key used for cookie signing. Changing this will invalidate active sessions.
+          defaultValue: $$cap_gen_random_hex(80)
+          validRegex: /.{1,}/
 
-            - id: $$cap_authentik_token
-            label: Authentik Bootstrap API Token
-            description: Create a token for the default AKADMIN user. Only read on the first startup. The string you specify for this variable is the token key you can use to authenticate yourself to the API.
-            defaultValue: $$cap_gen_random_hex(32)
-            validRegex: /.{1,}/
+        - id: $$cap_authentik_password
+          label: Authentik Bootstrap Admin Password
+          description: Configure the default password for the AKADMIN user. Only read on the first startup. Can be used for any flow executor.
+          defaultValue: $$cap_gen_random_hex(32)
+          validRegex: /.{1,}/
 
-            - id: $$cap_authentik_email
-            label: Authentik Bootstrap Email
-            description: Set the email address for the default AKADMIN user.
-            defaultValue: 
-            validRegex: /^([_a-z0-9]+[\._a-z0-9]*)(\+[a-z0-9]+)?@(([a-z0-9-]+\.)*[a-z]{2,4})$/  
+        - id: $$cap_authentik_token
+          label: Authentik Bootstrap API Token
+          description: Create a token for the default AKADMIN user. Only read on the first startup. The string you specify for this variable is the token key you can use to authenticate yourself to the API.
+          defaultValue: $$cap_gen_random_hex(32)
+          validRegex: /.{1,}/
 
-            - id: $$cap_pg_pass
-            label: PostgreSQL Password
-            defaultValue: $$cap_gen_random_hex(40)
-            validRegex: /^[a-f0-9]{16}$/
+        - id: $$cap_authentik_email
+          label: Authentik Bootstrap Email
+          description: Set the email address for the default AKADMIN user.
+          defaultValue: 
+          validRegex: /^([_a-z0-9]+[\._a-z0-9]*)(\+[a-z0-9]+)?@(([a-z0-9-]+\.)*[a-z]{2,4})$/  
 
-            - id: $$cap_pg_user
-            label: PostgreSQL User
-            defaultValue: 'authentik'
-            validRegex: /.{1,}/
+        - id: $$cap_pg_pass
+          label: PostgreSQL Password
+          defaultValue: $$cap_gen_random_hex(40)
+          validRegex: /^[a-f0-9]{16}$/
 
-            - id: $$cap_pg_db
-            label: PostgreSQL Database
-            defaultValue: 'authentik'
-            validRegex: /.{1,}/
+        - id: $$cap_pg_user
+          label: PostgreSQL User
+          defaultValue: 'authentik'
+          validRegex: /.{1,}/
 
-            - id: $$cap_pg_image
-            label: Postgres Version
-            defaultValue: '16'
-            validRegex: /^([0-9]{1,2})$/
+        - id: $$cap_pg_db
+          label: PostgreSQL Database
+          defaultValue: 'authentik'
+          validRegex: /.{1,}/
 
-            - id: $$cap_redis_version
-            label: Redis Version
-            defaultValue: '7.4'
-            validRegex: /.{1,}/
+        - id: $$cap_pg_image
+          label: Postgres Version
+          defaultValue: '16'
+          validRegex: /^([0-9]{1,2})$/
+
+        - id: $$cap_redis_version
+          label: Redis Version
+          defaultValue: '7.4'
+          validRegex: /.{1,}/
