@@ -1,149 +1,89 @@
- /*jshint esversion: 6 */
- const path = require('path');
- const yaml = require('yaml');
- const fs = require('fs-extra');
+const path = require('path');
+const yaml = require('yaml');
+const fs = require('fs-extra');
 
- const PUBLIC = `public`;
- const pathOfPublic = path.join(__dirname, '..', PUBLIC);
+// Define paths.
+const PUBLIC_FOLDER = path.join(__dirname, '..', 'public');
+const VERSION_FOLDER = path.join(PUBLIC_FOLDER, 'v4');
 
+/**
+ * Check apps in the folder.
+ */
+async function checkApps() {
+  try {
+    const appFiles = await fs.readdir(path.join(VERSION_FOLDER, 'apps'));
+    const validApps = appFiles.filter((file) => file.endsWith('.yml'));
 
- // validating version 4
- function validateV4() {
+    if (validApps.length !== appFiles.length) {
+      throw new Error('Hey! Everything in v4 needs that .yml extension.');
+    }
 
-     const version = '4';
-     const pathOfVersion = path.join(pathOfPublic, 'v' + version);
-     const pathOfApps = path.join(pathOfVersion, 'apps');
+    for (const appFile of validApps) {
+      await checkAppFile(appFile);
+      console.log(`App ${appFile} looking good!`);
+    }
+  } catch (err) {
+    console.error(err);
+    process.exit(127);
+  }
+}
 
-     return fs.readdir(pathOfApps)
-         .then(function (items) {
+/**
+ * Check a single application file.
+ * @param {string} appFile The application file name to check.
+ */
+async function checkAppFile(appFile) {
+  const filePath = path.join(VERSION_FOLDER, 'apps', appFile);
+  const content = yaml.parse(await fs.readFile(filePath, 'utf-8'));
+  validateAppContent(appFile, content);
+  await checkLogo(appFile);
+}
 
-             const apps = items.filter(v => v.includes('.yml'));
+/**
+ * Validate the contents of an application configuration.
+ * @param {string} appName The application's name.
+ * @param {Object} content The application configuration content.
+ */
+function validateAppContent(appName, content) {
+  if (!content.caproverOneClickApp) {
+    throw new Error(`Missing caproverOneClickApp for ${appName}`);
+  }
 
-             if (items.length !== apps.length) {
-                 throw new Error('All files in v4 must end with .yml');
-             }
+  const { description, instructions } = content.caproverOneClickApp;
 
-             for (var i = 0; i < apps.length; i++) {
-                 const contentString = fs.readFileSync(path.join(pathOfApps, apps[i]), 'utf-8');
-                 const content = yaml.parse(contentString);
-                 const captainVersion = (content.captainVersion + '');
-                 const versionString = (version + '');
-                 if (versionString !== captainVersion)
-                     throw new Error(`unmatched versions   ${versionString}  ${captainVersion} for ${apps[i]}`);
+  if (!description) {
+    throw new Error(`Missing description for ${appName}`);
+  }
 
-                 apps[i] = apps[i].replace('.yml', '');
+  if (description.length > 200) {
+    throw new Error(
+      `Description too long for ${appName} - keep it under 200 characters`
+    );
+  }
 
-                 if (!content.caproverOneClickApp) {
-                     throw new Error(`Cannot find caproverOneClickApp for ${apps[i]}`);
-                 }
+  if (!instructions || !instructions.start || !instructions.end) {
+    throw new Error(
+      `Missing instructions.start or instructions.end for ${appName}`
+    );
+  }
 
-                 if (!content.caproverOneClickApp.description) {
-                     throw new Error(`Cannot find description for ${apps[i]}`);
-                 }
+  if (!content.services) {
+    throw new Error(`Missing services for ${appName}`);
+  }
+}
 
-                 if (content.caproverOneClickApp.description.length > 200) {
-                     throw new Error(`Description too long for ${apps[i]}  - keep it below 200 chars`);
-                 }
+/**
+ * Check for the existence of the logo associated with an app.
+ * @param {string} appFile The application file name.
+ */
+async function checkLogo(appFile) {
+  const logoFile = appFile.replace('.yml', '');
+  const logoPath = path.join(VERSION_FOLDER, 'logos', `${logoFile}.png`);
 
-                 if (!content.caproverOneClickApp.instructions ||
-                     !content.caproverOneClickApp.instructions.start ||
-                     !content.caproverOneClickApp.instructions.end) {
-                     throw new Error(`Cannot find instructions.start or instructions.end for ${apps[i]}`);
-                 }
+  if (!(await fs.pathExists(logoPath)) || !(await fs.stat(logoPath)).isFile()) {
+    throw new Error(`Missing logo for ${appFile}: ${logoPath}`);
+  }
+}
 
-                 if (!content.services) {
-                     throw new Error(`Cannot find services for ${apps[i]}`);
-                 }
-
-                 Object.keys(content.services).forEach(
-                     (serviceName) => { // jshint ignore:line
-                         const s = content.services[serviceName];
-                         if (s.image && s.image.endsWith(':latest')) {
-                             // throw new Error(`"latest" tag is not allowed as it can change and break the setup, see ${apps[i]}`);
-                         }
-                     });
-
-                 const logoFileName = apps[i] + '.png';
-
-                 const logoFullPath = path.join(pathOfVersion, 'logos', logoFileName);
-
-                 if (!fs.existsSync(logoFullPath) ||
-                     !fs.statSync(logoFullPath).isFile()) {
-                     let printablePath = logoFullPath;
-                     printablePath = printablePath.substr(printablePath.indexOf(`/${PUBLIC}`));
-                     throw new Error(`Cannot find logo for ${apps[i]} ${printablePath}`);
-                 }
-
-                 console.log(`Validated ${apps[i]}`);
-
-             }
-
-         });
- }
-
- // validating version 2
- function validateV2() {
-
-     const version = '2';
-     const pathOfVersion = path.join(pathOfPublic, 'v' + version);
-     const pathOfApps = path.join(pathOfVersion, 'apps');
-
-     if (!fs.existsSync(pathOfApps)) {
-         return;
-     }
-
-     return fs.readdir(pathOfApps)
-         .then(function (items) {
-
-             const apps = items.filter(v => v.includes('.json'));
-
-             if (items.length !== apps.length) {
-                 throw new Error('All files in v2 must end with .json');
-             }
-
-             for (var i = 0; i < apps.length; i++) {
-                 const contentString = fs.readFileSync(path.join(pathOfApps, apps[i]));
-                 const content = JSON.parse(contentString);
-                 const captainVersion = (content.captainVersion + '');
-                 const versionString = (version + '');
-                 if (versionString !== captainVersion)
-                     throw new Error(`unmatched versions   ${versionString}  ${captainVersion} for ${apps[i]}`);
-
-                 apps[i] = apps[i].replace('.json', '');
-
-                 if (!content.description) {
-                     throw new Error(`Cannot find description for ${apps[i]}`);
-                 }
-                 if (content.description.length > 200) {
-                     throw new Error(`Description too long for ${apps[i]}  - keep it below 200 chars`);
-                 }
-
-                 const logoFileName = apps[i] + '.png';
-
-                 const logoFullPath = path.join(pathOfVersion, 'logos', logoFileName);
-
-                 if (!fs.existsSync(logoFullPath) ||
-                     !fs.statSync(logoFullPath).isFile()) {
-                     let printablePath = logoFullPath;
-                     printablePath = printablePath.substr(printablePath.indexOf(`/${PUBLIC}`));
-                     throw new Error(`Cannot find logo for ${apps[i]} ${printablePath}`);
-                 }
-
-                 console.log(`Validated ${apps[i]}`);
-
-             }
-
-         });
- }
-
- Promise.resolve()
-     .then(function () {
-         return validateV2();
-     })
-     .then(function () {
-         return validateV4();
-     })
-     .catch(function (err) {
-         console.error(err);
-         process.exit(127);
-     });
+// Start the checking process.
+checkApps();
