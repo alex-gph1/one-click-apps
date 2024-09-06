@@ -3,7 +3,7 @@ You can add it as a repo using `https://raw.githubusercontent.com/alex-gph1/one-
 In order to add a third party repository:
 -   Login to your CapRover dashboard
 -   Go to **apps** and click on **One-Click Apps/Databases** and scrolldown to the bottom
--   Under **3rd party repositories:** copy  the URL, (for example: `https://Awes0meHub.github.io/caprover-one-click-apps`) and paste it in to the text box
+-   Under **3rd party repositories:** copy  the URL, (for example: `https://raw.githubusercontent.com/alex-gph1/one-click-apps/master/dist`) and paste it in to the text box
 -   Click the **_Connect New Repository_** button
 
 ## Repo for CapRover One Click Apps
