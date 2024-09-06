@@ -117,7 +117,7 @@ services:
             notExposeAsWebApp: 'true'
 
 caproverOneClickApp:
-    displayName: Authentik by alex-gph1
+    displayName: Authentik (by alex-gph1)
     description: Open-source authentication and authorization system. Works with CapRover 1.12+
     isOfficial: true
     documentation: https://docs.goauthentik.io/docs/installation/
