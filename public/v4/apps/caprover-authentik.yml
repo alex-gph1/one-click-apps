@@ -5,36 +5,36 @@ services:
     $$cap_appname:
         image: $$cap_authentik_image:$$cap_authentik_tag
         restart: unless-stopped
-        command: ["dumb-init", "--", "ak", "server"]
+        command: ['dumb-init', '--', 'ak', 'server']
         environment:
-          AUTHENTIK_BOOTSTRAP_PASSWORD: $$cap_authentik_password
-          AUTHENTIK_BOOTSTRAP_TOKEN: $$cap_authentik_token
-          AUTHENTIK_BOOTSTRAP_EMAIL: $$cap_authentik_email
-          AUTHENTIK_SECRET_KEY: $$cap_secret_key
-          AUTHENTIK_REDIS__HOST: srv-captain--$$cap_appname-redis
-          #AUTHENTIK_REDIS__PORT: 
-          #AUTHENTIK_REDIS__DB: 
-          #AUTHENTIK_REDIS__PASSWORD: 
-          AUTHENTIK_POSTGRESQL__HOST: srv-captain--$$cap_appname-postgres
-          AUTHENTIK_POSTGRESQL__USER: $$cap_pg_user
-          AUTHENTIK_POSTGRESQL__NAME: $$cap_pg_db
-          AUTHENTIK_POSTGRESQL__PASSWORD: $$cap_pg_pass
-          # SMTP Host Emails are sent to
-          #AUTHENTIK_EMAIL__HOST: 
-          #AUTHENTIK_EMAIL__PORT: 
-          # Optionally authenticate (don't add quotation marks to your password)
-          #AUTHENTIK_EMAIL__USERNAME: 
-          #AUTHENTIK_EMAIL__PASSWORD: 
-          # Use StartTLS
-          #AUTHENTIK_EMAIL__USE_TLS: 
-          # Use SSL
-          #AUTHENTIK_EMAIL__USE_SSL: 
-          #AUTHENTIK_EMAIL__TIMEOUT: 
-          # Email address authentik will send from, should have a correct @domain
-          #AUTHENTIK_EMAIL__FROM: 
-    #    volumes:
-    #      - $$cap_appname-media:/media
-    #      - $$cap_appname-custom-templates:/templates
+            AUTHENTIK_BOOTSTRAP_PASSWORD: $$cap_authentik_password
+            AUTHENTIK_BOOTSTRAP_TOKEN: $$cap_authentik_token
+            AUTHENTIK_BOOTSTRAP_EMAIL: $$cap_authentik_email
+            AUTHENTIK_SECRET_KEY: $$cap_secret_key
+            AUTHENTIK_REDIS__HOST: srv-captain--$$cap_appname-redis
+            #AUTHENTIK_REDIS__PORT:
+            #AUTHENTIK_REDIS__DB:
+            #AUTHENTIK_REDIS__PASSWORD:
+            AUTHENTIK_POSTGRESQL__HOST: srv-captain--$$cap_appname-postgres
+            AUTHENTIK_POSTGRESQL__USER: $$cap_pg_user
+            AUTHENTIK_POSTGRESQL__NAME: $$cap_pg_db
+            AUTHENTIK_POSTGRESQL__PASSWORD: $$cap_pg_pass
+            # SMTP Host Emails are sent to
+            #AUTHENTIK_EMAIL__HOST:
+            #AUTHENTIK_EMAIL__PORT:
+            # Optionally authenticate (don't add quotation marks to your password)
+            #AUTHENTIK_EMAIL__USERNAME:
+            #AUTHENTIK_EMAIL__PASSWORD:
+            # Use StartTLS
+            #AUTHENTIK_EMAIL__USE_TLS:
+            # Use SSL
+            #AUTHENTIK_EMAIL__USE_SSL:
+            #AUTHENTIK_EMAIL__TIMEOUT:
+            # Email address authentik will send from, should have a correct @domain
+            #AUTHENTIK_EMAIL__FROM:
+        #    volumes:
+        #      - $$cap_appname-media:/media
+        #      - $$cap_appname-custom-templates:/templates
         depends_on:
             - $$cap_appname-postgres
             - $$cap_appname-redis
@@ -47,45 +47,45 @@ services:
     $$cap_appname-worker:
         image: $$cap_authentik_image:$$cap_authentik_tag
         restart: unless-stopped
-        command: ["dumb-init", "--", "ak", "worker"]
+        command: ['dumb-init', '--', 'ak', 'worker']
         environment:
-          AUTHENTIK_BOOTSTRAP_PASSWORD: $$cap_authentik_password
-          AUTHENTIK_BOOTSTRAP_TOKEN: $$cap_authentik_token
-          AUTHENTIK_BOOTSTRAP_EMAIL: $$cap_authentik_email
-          AUTHENTIK_SECRET_KEY: $$cap_secret_key
-          AUTHENTIK_REDIS__HOST: srv-captain--$$cap_appname-redis
-          #AUTHENTIK_REDIS__PORT: 
-          #AUTHENTIK_REDIS__DB: 
-          #AUTHENTIK_REDIS__PASSWORD: 
-          AUTHENTIK_POSTGRESQL__HOST: srv-captain--$$cap_appname-postgres
-          AUTHENTIK_POSTGRESQL__USER: $$cap_pg_user
-          AUTHENTIK_POSTGRESQL__NAME: $$cap_pg_db
-          AUTHENTIK_POSTGRESQL__PASSWORD: $$cap_pg_pass
-          # SMTP Host Emails are sent to
-          #AUTHENTIK_EMAIL__HOST: 
-          #AUTHENTIK_EMAIL__PORT: 
-          # Optionally authenticate (don't add quotation marks to your password)
-          #AUTHENTIK_EMAIL__USERNAME: 
-          #AUTHENTIK_EMAIL__PASSWORD: 
-          # Use StartTLS
-          #AUTHENTIK_EMAIL__USE_TLS: 
-          # Use SSL
-          #AUTHENTIK_EMAIL__USE_SSL: 
-          #AUTHENTIK_EMAIL__TIMEOUT: 
-          # Email address authentik will send from, should have a correct @domain
-          #AUTHENTIK_EMAIL__FROM: 
-          # `user: root` and the docker socket volume are optional.
-          # See more for the docker socket integration here:
-          # https://goauthentik.io/docs/outposts/integrations/docker
-          # Removing `user: root` also prevents the worker from fixing the permissions
-          # on the mounted folders, so when removing this make sure the folders have the correct UID/GID
-          # (1000:1000 by default)
+            AUTHENTIK_BOOTSTRAP_PASSWORD: $$cap_authentik_password
+            AUTHENTIK_BOOTSTRAP_TOKEN: $$cap_authentik_token
+            AUTHENTIK_BOOTSTRAP_EMAIL: $$cap_authentik_email
+            AUTHENTIK_SECRET_KEY: $$cap_secret_key
+            AUTHENTIK_REDIS__HOST: srv-captain--$$cap_appname-redis
+            #AUTHENTIK_REDIS__PORT:
+            #AUTHENTIK_REDIS__DB:
+            #AUTHENTIK_REDIS__PASSWORD:
+            AUTHENTIK_POSTGRESQL__HOST: srv-captain--$$cap_appname-postgres
+            AUTHENTIK_POSTGRESQL__USER: $$cap_pg_user
+            AUTHENTIK_POSTGRESQL__NAME: $$cap_pg_db
+            AUTHENTIK_POSTGRESQL__PASSWORD: $$cap_pg_pass
+            # SMTP Host Emails are sent to
+            #AUTHENTIK_EMAIL__HOST:
+            #AUTHENTIK_EMAIL__PORT:
+            # Optionally authenticate (don't add quotation marks to your password)
+            #AUTHENTIK_EMAIL__USERNAME:
+            #AUTHENTIK_EMAIL__PASSWORD:
+            # Use StartTLS
+            #AUTHENTIK_EMAIL__USE_TLS:
+            # Use SSL
+            #AUTHENTIK_EMAIL__USE_SSL:
+            #AUTHENTIK_EMAIL__TIMEOUT:
+            # Email address authentik will send from, should have a correct @domain
+            #AUTHENTIK_EMAIL__FROM:
+            # `user: root` and the docker socket volume are optional.
+            # See more for the docker socket integration here:
+            # https://goauthentik.io/docs/outposts/integrations/docker
+            # Removing `user: root` also prevents the worker from fixing the permissions
+            # on the mounted folders, so when removing this make sure the folders have the correct UID/GID
+            # (1000:1000 by default)
         user: root #Looks like it doesn't work
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-    #        - $$cap_appname-media:/media
-    #        - $$cap_appname-certs:/certs
-    #        - $$cap_appname-custom-templates:/templates
+        #        - $$cap_appname-media:/media
+        #        - $$cap_appname-certs:/certs
+        #        - $$cap_appname-custom-templates:/templates
         depends_on:
             - $$cap_appname-postgres
             - $$cap_appname-redis
@@ -118,9 +118,9 @@ services:
 
 caproverOneClickApp:
     displayName: Authentik
-    description: Open-source authentication and authorization system
+    description: Open-source authentication and authorization system. Works with CapRover 1.12+
     isOfficial: true
-    documentation: https://goauthentik.io
+    documentation: https://docs.goauthentik.io/docs/installation/
     instructions:
         start: |-
             Authentik will start after the PostgreSQL and Redis services are successfully deployed.
@@ -129,13 +129,12 @@ caproverOneClickApp:
 
             IMPORTANT! To finish the setup and enable access to Authentik at `http://$$cap_appname.$$cap_root_domain`, you need to configure NGINX.
 
-            
+
             Before proceeding please wait 2 to 3 minutes to let Authentik finalize initialization process.
 
             Copy the configuration from here https://github.com/alex-gph1/one-click-apps/blob/eed06fbaec5cebfafafa7c19778b7446e67efa81/misc/caprover-nginx-authentik.conf
             In another browser tab open your new Authentik app in Caprover and click on Edit Default Nginx Configurations. Paste the configuration there instead of the default one.
             Click Save & Restart. Now everything should be ready. Login using AKADMIN username and the password you set up earlier.
-
 
     variables:
         - id: $$cap_authentik_image
@@ -170,8 +169,8 @@ caproverOneClickApp:
         - id: $$cap_authentik_email
           label: Authentik Bootstrap Email
           description: Set the email address for the default AKADMIN user.
-          defaultValue: 
-          validRegex: /^([_a-z0-9]+[\._a-z0-9]*)(\+[a-z0-9]+)?@(([a-z0-9-]+\.)*[a-z]{2,4})$/  
+          defaultValue:
+          validRegex: /^([_a-z0-9]+[\._a-z0-9]*)(\+[a-z0-9]+)?@(([a-z0-9-]+\.)*[a-z]{2,4})$/
 
         - id: $$cap_pg_pass
           label: PostgreSQL Password
