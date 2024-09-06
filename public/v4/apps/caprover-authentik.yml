@@ -117,12 +117,13 @@ services:
             notExposeAsWebApp: 'true'
 
 caproverOneClickApp:
-    displayName: Authentik (by alex-gph1)
+    displayName: Authentik by alex-gph1
     description: Open-source authentication and authorization system. Works with CapRover 1.12+
     isOfficial: true
     documentation: https://docs.goauthentik.io/docs/installation/
     instructions:
         start: |-
+            Please note, this app is compatible with CapRover 1.12+.
             Authentik will start after the PostgreSQL and Redis services are successfully deployed.
         end: |-
             Authentik has been successfully deployed. Now wait up to 2-3 mins, before it initializes.
