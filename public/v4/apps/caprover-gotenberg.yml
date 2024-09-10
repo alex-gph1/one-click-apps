@@ -123,7 +123,6 @@ services:
             LOG_FORMAT: $$cap_GOTENBERG_LOG_FORMAT
             LOG_LEVEL: $$cap_GOTENBERG_LOG_LEVEL
             GRACEFUL_SHUTDOWN_DURATION: $$cap_GOTENBERG_GRACEFUL_SHUTDOWN_DURATION
-          
 
 caproverOneClickApp:
     displayName: Gotenberg (by alex-gph1)
@@ -137,7 +136,7 @@ caproverOneClickApp:
             Gotenberg has been successfully deployed! It might take few moments before it's fully started.
             For security measures it not exposed by default.
             If you prefer to expose it, you can change it in the **HTTP Settings** of `$$cap_appname`.
-            Then it will be available at `http://$$cap_appname.$$cap_root_domain`            
+            Then it will be available at `http://$$cap_appname.$$cap_root_domain`
     variables:
         - id: $$cap_GOTENBERG_VERSION
           label: General | Version
