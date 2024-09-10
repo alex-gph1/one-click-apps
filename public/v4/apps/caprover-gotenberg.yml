@@ -240,7 +240,7 @@ caproverOneClickApp:
           label: LibreOffice | Max Queue Size
           description: Maximum request queue size for LibreOffice. Set to 0 to disable this feature.
           defaultValue: 0
-          validRegex: /.{1,}/
+          validRegex: /\d/
         - id: $$cap_GOTENBERG_PDFENGINES_ENGINES
           label: PDF Engines | Engines
           description: PDF engines and their order (e.g. `pdftk,uno-pdfengine`). Leave blank to use all.
