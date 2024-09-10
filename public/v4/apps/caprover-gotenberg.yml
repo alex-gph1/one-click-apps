@@ -126,9 +126,9 @@ services:
           
 
 caproverOneClickApp:
-    displayName: Gotenberg
+    displayName: Gotenberg (by alex-gph1)
     isOfficial: true
-    description: Docker-Powered Stateless API For PDF Files
+    description: Docker-Powered Stateless API For PDF Files. Updated to v8.9.
     documentation: https://gotenberg.dev/docs/about
     instructions:
         start: |-
