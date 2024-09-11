@@ -1,0 +1,127 @@
+captainVersion: 4
+services:
+    $$cap_appname:
+        image: flowiseai/flowise
+        restart: on-failure:5
+        environment:
+            PORT: 3000
+            CORS_ORIGINS: $$cap_cors_origins
+            IFRAME_ORIGINS: $$cap_iframe_origins
+            FLOWISE_USERNAME: $$cap_username
+            FLOWISE_PASSWORD: $$cap_password
+            FLOWISE_FILE_SIZE_LIMIT: $$cap_file_size_limit
+            DEBUG: $$cap_debug
+            DATABASE_TYPE: sqlite
+            DATABASE_PATH: /root/.flowise/db/flowise.sqlite
+            OVERRIDE_DATABASE: $$cap_sync_db_on_restart
+            LOG_LEVEL: $$cap_log_level
+            LOG_PATH: /root/.flowise/logs
+            APIKEY_PATH: /root/.flowise/api_key
+            SECRETKEY_PATH: /root/.flowise/secret_key
+            STORAGE_TYPE: local
+            BLOB_STORAGE_PATH: /root/.flowise/storage
+            TOOL_FUNCTION_BUILTIN_DEP: $$cap_tool_function_builtin_dep
+            TOOL_FUNCTION_EXTERNAL_DEP: $$cap_tool_function_external_dep
+            LANGCHAIN_TRACING_V2: $$cap_langchain_tracing_v2
+            LANGCHAIN_API_KEY: $$cap_langchain_api_key
+            LANGCHAIN_PROJECT: $$cap_langchain_project
+            LANGCHAIN_ENDPOINT: $$cap_langchain_endpoint
+        volumes:
+            - $$cap_appname-data:/root/.flowise
+        caproverExtra:
+            containerHttpPort: 3000
+caproverOneClickApp:
+    variables:
+        - id: $$cap_username
+          label: Flowise Username
+          defaultValue: admin
+          description: The username to login to Flowise.
+        - id: $$cap_password
+          label: Flowise Password
+          defaultValue: $$cap_gen_random_hex(20)
+          description: The password to login to Flowise.
+        - id: $$cap_cors_origins
+          label: Allowed Origins for CORS
+          defaultValue: '*'
+          description: The allowed origins for all cross-origin HTTP calls.
+        - id: $$cap_iframe_origins
+          label: Allowed Origins for Iframe Embedding
+          defaultValue: '*'
+          description: The allowed origins for iframe src embedding.
+        - id: $$cap_file_size_limit
+          label: Upload File Size Limit
+          defaultValue: 50mb
+          description: The maximum file size allowed for uploads.
+        - id: $$cap_sync_db_on_restart
+          label: Sync Database on Restart
+          defaultValue: false
+          description: Set to true to re-create schema on every restart.
+          type: boolean
+        - id: $$cap_debug
+          label: Debug Mode
+          defaultValue: true
+          description: Print logs from components.
+          type: boolean
+        - id: $$cap_log_level
+          label: Log Level (error, info, verbose, debug)
+          defaultValue: info
+          description: Different levels of logs.
+        - id: $$cap_tool_function_builtin_dep
+          label: Tool Function Built-in Dependencies
+          description: >-
+              NodeJS built-in modules to be used for Tool Function. Multiple modules should be comma-separated. (ie: crypto,fs,path)
+        - id: $$cap_tool_function_external_dep
+          label: Tool Function External Dependencies
+          description: >-
+              External modules to be used for Tool Function. Multiple modules should be comma-separated. (ie: axios,express,fs-extra,moment)
+        - id: $$cap_langchain_tracing_v2
+          label: LangSmith Tracing
+          defaultValue: false
+          description: Turn LangSmith tracing ON or OFF.
+          type: boolean
+        - id: $$cap_langchain_api_key
+          label: LangSmith API Key
+          description: LangSmith API Key.
+        - id: $$cap_langchain_project
+          label: LangSmith Project
+          description: Project to trace on LangSmith.
+        - id: $$cap_langchain_endpoint
+          label: LangSmith Endpoint
+          description: LangSmith endpoint.
+    instructions:
+        start: |-
+            Flowise is an open-source low-code platform for building, deploying, and sharing customized LLM orchestration flows and AI agents.
+
+            Prerequisites:
+            * API keys for AI providers (if applicable)
+            * Basic understanding of LLM orchestration and AI agents
+
+            During installation, you will provide:
+            * Authentication credentials
+            * CORS and iframe settings
+            * File size limit and debug mode
+            * Encryption key (optional)
+            * Logging settings
+            * Tool function dependencies (optional)
+            * LangSmith integration (optional)
+
+            Refer to the Flowise documentation (https://docs.flowiseai.com) for detailed explanations.
+
+        end: |-
+            Flowise installation complete!
+
+            Access the web interface:
+            * Visit https://$$cap_appname.$$cap_root_domain/
+            * Log in with:
+              * Username: $$cap_username
+              * Password: $$cap_password
+
+            For issues or support, refer to the Flowise documentation or community channels.
+
+            Happy orchestrating!
+    isOfficial: true
+    documentation: >-
+        Taken from https://docs.flowiseai.com | Official Website is https://flowiseai.com
+    displayName: Flowise AI (SQLite) - LLM Orchestration Tool
+    description: >-
+        [24/04/26 13h15] Flowise is an open-source low-code platform for building, deploying, and sharing LLM flows and AI agents. This is the SQLite version.

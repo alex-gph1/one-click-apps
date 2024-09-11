@@ -1,4 +1,4 @@
-#need to check with replice, otherwise it works within localhost
+#doesn't work
 ---
 captainVersion: 4
 
@@ -6,7 +6,7 @@ services:
     $$cap_appname:
         restart: 'always'
         image: $$cap_service_image:$$cap_service_tag
-        command: 'start-from-init --masterkey "$$cap_secret_key" --tlsMode disabled'
+        command: ["start-from-init", "--masterkey", "$$cap_secret_key", "--tlsMode disabled"]
         environment:
             ZITADEL_DATABASE_POSTGRES_HOST: $$cap_db_host
             ZITADEL_DATABASE_POSTGRES_PORT: $$cap_db_port
