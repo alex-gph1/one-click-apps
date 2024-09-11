@@ -25,7 +25,7 @@ services:
       websocketSupport: 'true'
 
 caproverOneClickApp:
-    displayName: Zitadel (by alex-gph1)
+    displayName: Zitadel - No DB (by alex-gph1)
     description: Identity infrastructure, simplified for you
     isOfficial: true
     documentation: https://zitadel.com/docs/guides/overview
