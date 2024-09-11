@@ -3,26 +3,26 @@
 captainVersion: 4
 
 services:
-  $$cap_appname:
-    restart: 'always'
-    image: $$cap_service_image:$$cap_service_tag
-    command: 'start-from-init --masterkey "$$cap_secret_key" --tlsMode disabled'
-    environment:
-      ZITADEL_DATABASE_POSTGRES_HOST: $$cap_db_host
-      ZITADEL_DATABASE_POSTGRES_PORT: $$cap_db_port
-      ZITADEL_DATABASE_POSTGRES_DATABASE: $$cap_db_name
-      ZITADEL_DATABASE_POSTGRES_USER_USERNAME: $$cap_db_usr_name
-      ZITADEL_DATABASE_POSTGRES_USER_PASSWORD: $$cap_db_usr_psw
-      ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE: $$cap_db_usr_ssl
-      ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME: $$cap_db_adm_name
-      ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD: $$cap_db_adm_psw
-      ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE: $$cap_db_adm_ssl
-      ZITADEL_EXTERNALSECURE: true
-      ZITADEL_EXTERNALDOMAIN: $$cap_appname.$$cap_root_domain
-      ZITADEL_EXTERNALPORT: 443
-    caproverExtra:
-      containerHttpPort: '8080'
-      websocketSupport: 'true'
+    $$cap_appname:
+        restart: 'always'
+        image: $$cap_service_image:$$cap_service_tag
+        command: 'start-from-init --masterkey "$$cap_secret_key" --tlsMode disabled'
+        environment:
+            ZITADEL_DATABASE_POSTGRES_HOST: $$cap_db_host
+            ZITADEL_DATABASE_POSTGRES_PORT: $$cap_db_port
+            ZITADEL_DATABASE_POSTGRES_DATABASE: $$cap_db_name
+            ZITADEL_DATABASE_POSTGRES_USER_USERNAME: $$cap_db_usr_name
+            ZITADEL_DATABASE_POSTGRES_USER_PASSWORD: $$cap_db_usr_psw
+            ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE: $$cap_db_usr_ssl
+            ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME: $$cap_db_adm_name
+            ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD: $$cap_db_adm_psw
+            ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE: $$cap_db_adm_ssl
+            ZITADEL_EXTERNALSECURE: true
+            ZITADEL_EXTERNALDOMAIN: $$cap_appname.$$cap_root_domain
+            ZITADEL_EXTERNALPORT: 443
+        caproverExtra:
+            containerHttpPort: '8080'
+            websocketSupport: 'true'
 
 caproverOneClickApp:
     displayName: Zitadel - No DB (by alex-gph1)
@@ -36,7 +36,7 @@ caproverOneClickApp:
                 - the zitadel user
                 - the zitadel database
                 - granting required permissions to the zitadel user
-            
+
                 CREATE ROLE zitadel LOGIN;
                 CREATE DATABASE zitadel;
                 GRANT CONNECT, CREATE ON DATABASE zitadel TO zitadel;
@@ -45,7 +45,6 @@ caproverOneClickApp:
 
         end: >-
             Zitadel has been successfully deployed! Access it at `http://$$cap_appname.$$cap_root_domain`.
-            
 
     variables:
         - id: $$cap_service_image
@@ -61,7 +60,7 @@ caproverOneClickApp:
 
         - id: $$cap_secret_key
           label: Zitadel Master Key
-          description: The masterkey is used to AES256-encrypt other generated encryption keys. It must be 32 bytes. 
+          description: The masterkey is used to AES256-encrypt other generated encryption keys. It must be 32 bytes.
           defaultValue: $$cap_gen_random_hex(32)
           validRegex: /.{32}/
 
@@ -100,7 +99,7 @@ caproverOneClickApp:
 
         - id: $$cap_db_adm_psw
           label: Database Admin Password
-          defaultValue: 
+          defaultValue:
 
         - id: $$cap_db_adm_ssl
           label: Database Admin SSL Mode
