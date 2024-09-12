@@ -53,9 +53,9 @@ caproverOneClickApp:
 
         - id: $$cap_keycloak_password
           label: Keycloak admin password
-          description: 'Login password for the admin web user.  12-20 characters.'
+          description: 'Login password for the admin web user.  12-99 characters.'
           defaultValue: $$cap_gen_random_hex(20)
-          validRegex: /.{12,20}/
+          validRegex: /.{12,99}/
 
         - id: $$cap_db_url
           label: Database URL (optional)
@@ -91,13 +91,13 @@ caproverOneClickApp:
           label: Database User
           description: 'App-to-app database username.'
           defaultValue: keycloak
-          validRegex: /.{1,0}/
+          validRegex: /.{1,}/
 
         - id: $$cap_db_pass
           label: Database Password
-          description: 'App-to-app database credential.  12-20 characters.'
+          description: 'App-to-app database credential.  12-99 characters.'
           defaultValue: $$cap_gen_random_hex(20)
-          validRegex: /.{12,20}/
+          validRegex: /.{12,99}/
 
     instructions:
         start: >-
