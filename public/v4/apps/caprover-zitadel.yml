@@ -6,7 +6,13 @@ services:
     $$cap_appname:
         restart: 'always'
         image: $$cap_service_image:$$cap_service_tag
-        command: ["start-from-init", "--masterkey", "$$cap_secret_key", "--tlsMode disabled"]
+        command:
+            [
+                'start-from-init',
+                '--masterkey',
+                '$$cap_secret_key',
+                '--tlsMode disabled',
+            ]
         environment:
             ZITADEL_DATABASE_POSTGRES_HOST: $$cap_db_host
             ZITADEL_DATABASE_POSTGRES_PORT: $$cap_db_port
@@ -25,8 +31,8 @@ services:
             websocketSupport: 'true'
 
 caproverOneClickApp:
-    displayName: Zitadel - No DB (by alex-gph1)
-    description: Identity infrastructure, simplified for you
+    displayName: ❌ Zitadel - No DB (by alex-gph1)
+    description: ❗Not working. Identity infrastructure, simplified for you
     isOfficial: true
     documentation: https://zitadel.com/docs/guides/overview
     instructions:
