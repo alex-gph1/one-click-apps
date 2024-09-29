@@ -160,5 +160,5 @@ caproverOneClickApp:
         - id: $$cap_POSTGRES_PASSWORD
           label: Database | User Password
           description: Password of the PostgreSQL user.
-          defaultValue: 
+          defaultValue:
           validRegex: /.{1,}/
