@@ -1,0 +1,232 @@
+captainVersion: 4
+services:
+    $$cap_appname-tracardi-api:
+        image: tracardi/tracardi-api:$$cap_image_tag
+        restart: always
+        environment:
+            ELASTIC_HOST: http://srv-captain--$$cap_appname-elasticsearch:$$cap_elastic_port
+            ELASTICSEARCH_USERNAME: elastic
+            ELASTICSEARCH_PASSWORD: $$cap_elastic_pass
+            REDIS_HOST: redis://:$$cap_redis_pass@srv-captain--$$cap_appname-redis:$$cap_redis_port
+            REDIS_PASSWORD: $$cap_redis_pass
+            MYSQL_USERNAME: $$cap_db_user
+            MYSQL_PASSWORD: $$cap_db_pass
+            MYSQL_ROOT_PASSWORD: $$cap_db_pass
+            MYSQL_HOST: srv-captain--$$cap_appname-mysql
+            LOGGING_LEVEL: info
+            DEMO: 'yes'
+            PRODUCTION: 'no'
+            SAVE_LOGS: 'no'
+            API_PORT: $$cap_api_port
+            DEBUG_MODE: $$cap_debug_mode
+            MAX_WORKERS: $$cap_max_workers
+        #    ports:
+        #      - $$cap_api_port:80
+        depends_on:
+            - $$cap_appname-redis
+            - $$cap_appname-elasticsearch
+            - $$cap_appname-mysql
+        #    caproverExtra:
+        #        containerHttpPort: '9000'
+        caproverExtra:
+            notExposeAsWebApp: 'true'
+
+    $$cap_appname-tracardi-gui:
+        image: tracardi/tracardi-gui:$$cap_image_tag
+        #    ports:
+        #      - 8787:80
+        depends_on:
+            - $$cap_appname-tracardi-api
+        caproverExtra:
+            containerHttpPort: '8787'
+
+    $$cap_appname-elasticsearch:
+        image: $$cap_elastic_image:$$cap_elastic_tag
+        environment:
+            bootstrap.memory_lock: 'true'
+            ES_JAVA_OPTS: '-Xms512m -Xmx512m'
+            discovery.type: single-node
+            xpack.security.enabled: 'false'
+            cluster.name: ElasticSearchCluster
+            ELASTICSEARCH_LOCK_ALL_MEMORY: 'true'
+            ELASTICSEARCH_CLUSTER_NAME: ElasticSearchCluster
+            ELASTICSEARCH_PASSWORD: $$cap_elastic_pass
+            ELASTICSEARCH_HEAP_SIZE: 512m
+            ELASTICSEARCH_HEAP_NEWSIZE: 128m
+            ELASTICSEARCH_ENABLE_SECURITY: false
+            ELASTIC_PORT: $$cap_elastic_port
+            ELASTIC_MEMORY_LIMIT: $$cap_elastic_memory
+        volumes:
+            - $$cap_appname-es-data:/usr/share/elasticsearch/data
+        caproverExtra:
+            notExposeAsWebApp: 'true'
+
+    $$cap_appname-redis:
+        image: redis:$$cap_redis_tag
+        environment:
+            REDIS_PASSWORD: $$cap_redis_pass
+            REDIS_PORT: $$cap_redis_port
+        caproverExtra:
+            notExposeAsWebApp: 'true'
+
+    $$cap_appname-mysql:
+        image: $$cap_mysql_image:$$cap_mysql_tag
+        environment:
+            MYSQL_ROOT_PASSWORD: $$cap_db_pass
+            MYSQL_DATABASE: tracardi
+            MYSQL_PASSWORD: $$cap_db_pass
+            MYSQL_USER: $$cap_db_user
+            MYSQL_PORT: $$cap_mysql_port
+        volumes:
+            - $$cap_appname-mysql-data:/var/lib/mysql
+        caproverExtra:
+            notExposeAsWebApp: 'true'
+
+    $$cap_appname-worker:
+        image: tracardi/update-worker:$$cap_image_tag
+        environment:
+            ELASTIC_HOST: http://srv-captain--$$cap_appname-elasticsearch:$$cap_elastic_port
+            REDIS_HOST: redis://:$$cap_redis_pass@srv-captain--$$cap_appname-redis:$$cap_redis_port
+            MYSQL_HOST: srv-captain--$$cap_appname-mysql:$$cap_mysql_port
+        depends_on:
+            - $$cap_appname-redis
+            - $$cap_appname-elasticsearch
+            - $$cap_appname-mysql
+        caproverExtra:
+            notExposeAsWebApp: 'true'
+
+    $$cap_appname-apm:
+        image: tracardi/apm:$$cap_image_tag
+        environment:
+            ELASTIC_HOST: http://srv-captain--$$cap_appname-elasticsearch:$$cap_elastic_port
+            REDIS_HOST: redis://:$$cap_redis_pass@srv-captain--$$cap_appname-redis:$$cap_redis_port
+            MYSQL_HOST: srv-captain--$$cap_appname-mysql:$$cap_mysql_port
+            MODE: 'worker'
+            PAUSE: 15
+        depends_on:
+            - $$cap_appname-redis
+            - $$cap_appname-elasticsearch
+            - $$cap_appname-mysql
+        caproverExtra:
+            notExposeAsWebApp: 'true'
+
+volumes:
+    $$cap_appname-es-data:
+        driver: local
+    $$cap_appname-mysql-data:
+        driver: local
+
+caproverOneClickApp:
+    variables:
+        - id: $$cap_image_tag
+          label: Image Tag
+          description: Set the tag to use for the image. View the available tags here https://hub.docker.com/r/tracardi/tracardi-api/tags
+          defaultValue: '1.1.x'
+          validRegex: /.{1,}/
+
+        - id: $$cap_elastic_image
+          label: ElasticSearch Image
+          description: Set the image to use for the ElasticSearch. View the available images here https://hub.docker.com/search?q=elasti&source=store&image_filter=official&image_filter=store&image_filter=open_source
+          defaultValue: 'elasticsearch'
+          validRegex: /.{1,}/
+
+        - id: $$cap_elastic_tag
+          label: ElasticSearch Image Tag
+          description: Set the image tag to use for the ElasticSearch. View the available tags here https://hub.docker.com/_/elasticsearch/tags
+          defaultValue: '8.15.3'
+          validRegex: /.{1,}/
+
+        - id: $$cap_redis_tag
+          label: Redis Image Tag
+          description: Set the image tag to use for Redis. View the available tags here https://hub.docker.com/_/redis/tags
+          defaultValue: 'latest'
+          validRegex: /.{1,}/
+
+        - id: $$cap_mysql_image
+          label: MySQL Image
+          description: Set the image to use for MySQL. View the available images here https://hub.docker.com/search?q=mysql&source=store&image_filter=official&image_filter=store
+          defaultValue: 'mysql'
+          validRegex: /.{1,}/
+
+        - id: $$cap_mysql_tag
+          label: MySQL Image Tag
+          description: Set the image tag to use for MySQL. View the available tags here https://hub.docker.com/_/mysql/tags
+          defaultValue: '9.0'
+          validRegex: /.{1,}/
+
+        - id: $$cap_elastic_port
+          label: ElasticSearch Port
+          description: Set the port for ElasticSearch
+          defaultValue: '9200'
+          validRegex: /^[0-9]+$/
+
+        - id: $$cap_elastic_memory
+          label: ElasticSearch Memory Limit
+          description: Set the memory limit for ElasticSearch
+          defaultValue: '512m'
+          validRegex: /^[0-9]+[kmg]$/i
+
+        - id: $$cap_elastic_pass
+          label: Elastic Password
+          description: Set the password for Elastic
+          defaultValue: $$cap_gen_random_hex(48)
+          validRegex: /.{1,}/
+
+        - id: $$cap_redis_port
+          label: Redis Port
+          description: Set the port for Redis
+          defaultValue: '6379'
+          validRegex: /^[0-9]+$/
+
+        - id: $$cap_redis_pass
+          label: Redis Password
+          description: Set the password for Redis
+          defaultValue: $$cap_gen_random_hex(48)
+          validRegex: /.{1,}/
+
+        - id: $$cap_mysql_port
+          label: MySQL Port
+          description: Set the port for MySQL
+          defaultValue: '3306'
+          validRegex: /^[0-9]+$/
+
+        - id: $$cap_db_user
+          label: Database User
+          description: Set the name for the database user
+          defaultValue: 'root'
+          validRegex: /.{1,}/
+
+        - id: $$cap_db_pass
+          label: Database Password
+          description: Set the password for the database user
+          defaultValue: $$cap_gen_random_hex(48)
+          validRegex: /.{1,}/
+
+        - id: $$cap_api_port
+          label: API Port
+          description: Set the port for the Tracardi API
+          defaultValue: '80'
+          validRegex: /^[0-9]+$/
+
+        - id: $$cap_debug_mode
+          label: Debug Mode
+          description: Enable or disable debug mode
+          defaultValue: 'false'
+          validRegex: /^(true|false)$/
+
+        - id: $$cap_max_workers
+          label: Max Workers
+          description: Set the maximum number of workers
+          defaultValue: '1'
+          validRegex: /^[0-9]+$/
+
+    instructions:
+        start: >-
+            Tracardi is a powerful tool for managing your customer data and automating marketing processes.
+            Enter your configuration parameters and click next. A MySQL database, Redis, ElasticSearch, and other necessary services will be created for you. The setup process will take a few minutes to complete.
+        end: >
+            Tracardi is deployed and available as $$cap_appname-tracardi-gui.
+            IMPORTANT: It will take a few minutes for all services to be ready. Please be patient.
+    displayName: Tracardi (not tested and probably broken)
+    isOfficial: true
+    description: Tracardi is an open-source customer data and automation tool.
