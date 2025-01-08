@@ -1,0 +1,68 @@
+captainVersion: 4
+services:
+  $$cap_appname-fleet:
+    image: fleetdm/fleet
+    restart: unless-stopped
+    command: sh -c "/usr/bin/fleet prepare db --no-prompt && /usr/bin/fleet serve"
+    environment:
+      FLEET_SERVER_TLS: false
+      FLEET_SERVER_ADDRESS: 0.0.0.0:8412
+      FLEET_MYSQL_ADDRESS: $$cap_mysql_address
+      FLEET_MYSQL_DATABASE: $$cap_mysql_database
+      FLEET_MYSQL_USERNAME: $$cap_mysql_user
+      FLEET_MYSQL_PASSWORD: $$cap_mysql_password
+      FLEET_REDIS_ADDRESS: $$cap_redis_address
+      FLEET_REDIS_PASSWORD: $$cap_redis_password
+      FLEET_REDIS_CONNECT_RETRY_ATTEMPTS: 3
+      FLEET_WEBHOOK_SETTINGS_INTERVAL: "1M"
+      FLEET_OSQUERY_LABEL_UPDATE_INTERVAL: 1m
+      FLEET_OSQUERY_POLICY_UPDATE_INTERVAL: "2m"
+      FLEET_OSQUERY_ENABLE_ASYNC_HOST_PROCESSING: true
+      FLEET_PACKAGING_GLOBAL_ENROLL_SECRET: $$cap_fleet_enroll_secret
+    caproverExtra:
+      containerHttpPort: 8412
+
+caproverOneClickApp:
+  variables:
+    - id: $$cap_mysql_address
+      label: MySQL Address
+      description: Address of the existing MySQL service
+      defaultValue: mysql:3306
+
+    - id: $$cap_mysql_database
+      label: MySQL Database Name
+      description: Name of the MySQL database
+      defaultValue: fleet
+
+    - id: $$cap_mysql_user
+      label: MySQL User
+      description: Username for MySQL database
+      defaultValue: fleet
+
+    - id: $$cap_mysql_password
+      label: MySQL Password
+      description: Password for MySQL user
+      defaultValue: mysqlpassword
+
+    - id: $$cap_redis_address
+      label: Redis Address
+      description: Address of the existing Redis service
+      defaultValue: redis:6379
+
+    - id: $$cap_redis_password
+      label: Redis Password
+      description: Password for Redis
+      defaultValue: redispassword
+
+    - id: $$cap_fleet_enroll_secret
+      label: Fleet Enroll Secret
+      description: Global enroll secret for Fleet
+      defaultValue: $$cap_gen_random_hex(32)
+
+  instructions:
+    start: Fleet is an open-source device management platform.
+    end: Fleet has been successfully deployed. Access it at https://$$cap_appname.$$cap_root_domain
+
+  displayName: Fleet (BYODb - by alex-gph1)
+  description: Open-source device management platform. Bring your own Redis and MySQL.
+  isOfficial: true 
