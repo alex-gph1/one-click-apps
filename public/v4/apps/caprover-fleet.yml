@@ -64,5 +64,5 @@ caproverOneClickApp:
         end: Fleet has been successfully deployed. Access it at https://$$cap_appname.$$cap_root_domain
 
     displayName: Fleet (BYODb - by alex-gph1)
-    description: Open-source device management platform. Bring your own Redis and MySQL.
+    description: Open-source device management platform. Bring your own Redis and MySQL (don't bring MariaDB or the likes, it's hopeless).
     isOfficial: true
