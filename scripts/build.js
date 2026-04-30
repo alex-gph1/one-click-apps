@@ -148,7 +148,13 @@ async function createIndexHtml(appList) {
     </html>
   `;
 
-  await fs.writeFile(path.join(DIST_FOLDER, 'index.html'), htmlContent);
+  const cleanHtmlContent = htmlContent
+    .split('\n')
+    .map((line) => line.trimEnd())
+    .join('\n')
+    .trimEnd();
+
+  await fs.writeFile(path.join(DIST_FOLDER, 'index.html'), `${cleanHtmlContent}\n`);
 }
 
 /**
