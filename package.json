@@ -2,12 +2,13 @@
   "name": "caprover-one-click-apps",
   "version": "1.0.0",
   "description": "Custom One Click App Repository for CapRover",
+  "packageManager": "pnpm@8.6.11",
   "scripts": {
     "format": "prettier --debug-check \"./public/**/*.{json,yml}\"",
     "format:write": "prettier --write \"./public/**/*.{json,yml}\"",
     "build": "rimraf ./dist/ && mkdirp dist && node ./scripts/build.js",
     "validate": "node ./scripts/validate_apps.js",
-    "publish": "pnpm run build && ./scripts/publish-from-actions.sh"
+    "publish": "pnpm run validate && pnpm run format && pnpm run build && ./scripts/publish-from-actions.sh"
   },
   "repository": {
     "type": "git",

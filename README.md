@@ -1,12 +1,16 @@
-You can add it as a repo using `https://raw.githubusercontent.com/alex-gph1/one-click-apps/master/dist`
-
-In order to add a third party repository:
--   Login to your CapRover dashboard
--   Go to **apps** and click on **One-Click Apps/Databases** and scrolldown to the bottom
--   Under **3rd party repositories:** copy  the URL, (for example: `https://raw.githubusercontent.com/alex-gph1/one-click-apps/master/dist`) and paste it in to the text box
--   Click the **_Connect New Repository_** button
-
 ## Repo for CapRover One Click Apps
+
+This is a public, personal CapRover one-click app repository. It is maintained primarily for our own deployments and experiments, but it is open for anyone to inspect, fork, or use as a starting point.
+
+This is not the official CapRover app catalog. Treat every template as something to review before use:
+- Some apps may not work as-is.
+- Some apps may be outdated when upstream images or application requirements change.
+- Some apps are only partially tested.
+- Some apps require additional infrastructure or manual setup, such as external databases, SMTP, object storage, OAuth providers, reverse-proxy/auth configuration, migrations, or other one-time initialization steps.
+
+Do not commit real credentials, tokens, private domains, customer data, or deployment-specific secrets. Keep local deployment values in ignored `.env` files, and use CapRover variables for any value that should be supplied at install time.
+
+Files under `misc/docker compose/` are reference material for development and template conversion. They may contain placeholder or intentionally insecure sample defaults; review and replace them before running anything outside a disposable test environment.
 
 ### How to create a one-click app (as of v1.8.0):
 First, have a look at [this simple example](https://github.com/caprover/one-click-apps/blob/master/public/v4/apps/privatebin.yml). Now, read on for more details:
@@ -50,12 +54,23 @@ caproverOneClickApp:
 
 
 ### Services:
-- Other than `image`, `environment`, `ports`, `volumes`, `depends_on`, and `hostname`, other parameters are currently being ignored by CapRover. If you need a particular parameter, please file an issue, and we'll add it to the respected list.
-- Services have a special subsection specific to CapRover called `caproverExtra` which contains service specific parameters that are only available via CapRover and not docker compose. Currently this field can take the following variables:
-    - `dockerfileLines` which is a multiline variable, and can be used instead of `image` property in the service. You must delete the `image` property if you want to use this parameter.
-    - `containerHttpPort` is useful when the underlying service uses a custom port for HTTP. If not provided, the default will be `"80"`
-    - `notExposeAsWebApp` can be set to `"true"` when the underlying service is not an HTTP app. This is useful for databases and other internally used services.
-    - `websocketSupport` can be set to `"true"` to automatically enable Websocket Support. Only supported in versions 1.12+
+Even though, the format used by One Click apps is Docker Compose, not all parameters defined in Docker Compose file are parsed out by CapRover. Only the following parameters are used:
+- `image`
+- `environment`
+- `ports`
+- `volumes`
+- `depends_on`
+- `hostname`
+- `command`
+- `cap_add`
+
+Other parameters are currently being ignored by CapRover. If you need a particular parameter, please file an issue, and we'll add it to the respected list.
+
+Aside from the Docker Compose template, services have a special subsection specific to CapRover called `caproverExtra` which contains service specific parameters that are only available via CapRover and not docker compose. Currently this field can take the following variables:
+- `dockerfileLines` which is a multiline variable, and can be used instead of `image` property in the service. You must delete the `image` property if you want to use this parameter. NOTE: `dockerfileLines` should be used in rare cases where other methods cannot work. Prefer `command` where possible.
+- `containerHttpPort` is useful when the underlying service uses a custom port for HTTP. If not provided, the default will be `"80"`
+- `notExposeAsWebApp` can be set to `"true"` when the underlying service is not an HTTP app. This is useful for databases and other internally used services.
+- `websocketSupport` can be set to `"true"` to automatically enable Websocket Support. Only supported in versions 1.12+
 
 ### Icon
 - Make sure you add an app icon to the logos directory!
@@ -75,16 +90,16 @@ After creating your One-Click app yaml file, you need to test it before creating
 ---------
 
 ## Build your own one-click app repository
-You may want to build your own private repository. CapRover supports having multiple repositories. You can add new repository URLs to the one click app page. The official one, this one, is available as `https://oneclickapps.caprover.com`.
+CapRover supports having multiple one-click app repositories. You can add repository URLs to the one-click app page. The official CapRover catalog is available as `https://oneclickapps.caprover.com`; this repository is a separate public repository for our own templates.
 
 To create your own repository:
 - Fork this repository
 - Delete all existing apps (to avoid duplicate apps), and add your own apps.
-- Run `npm i`
-- Run `npm run validate_apps`
-- Run `npm run formatter-write`
-- Run `npm run build`
-- Now you can host the static content placed in `./dist` directory anywhere you want, the official repo uses [github pages](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site) to publish the content. Make sure to update [CNAME](https://github.com/caprover/one-click-apps/blob/master/public/CNAME) to your own URL if you decide to do so.
+- Run `pnpm install --frozen-lockfile`
+- Run `pnpm run validate`
+- Run `pnpm run format`
+- Run `pnpm run build`
+- Now you can host the static content placed in `./dist` directory anywhere you want. The official CapRover catalog uses [GitHub Pages](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site), and you can do the same. Make sure to update [CNAME](https://github.com/caprover/one-click-apps/blob/master/public/CNAME) to your own URL if you decide to do so.
  
 ### Hosting your own repository on a CapRover instance
 Your own private repository can be hosted on a CapRover instance with the newly-added [captain-definition](/captain-definition) file.
@@ -101,8 +116,8 @@ To set up your private repository on CapRover:
 
 In order to add a third party repository:
 -   Login to your CapRover dashboard
--   Go to **apps** and click on **One-Click Apps/Databases** and scrolldown to the bottom
--   Under **3rd party repositories:** copy  the URL, (for example: `https://Awes0meHub.github.io/caprover-one-click-apps`) and paste it in to the text box
+-   Go to **apps** and click on **One-Click Apps/Databases** and scroll down to the bottom
+-   Under **3rd party repositories:** copy the URL, (for example: `https://Awes0meHub.github.io/caprover-one-click-apps`) and paste it in to the text box
 -   Click the **_Connect New Repository_** button
 
 #### 3rd party repositories

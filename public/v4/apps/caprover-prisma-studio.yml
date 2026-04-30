@@ -1,0 +1,30 @@
+captainVersion: 4
+services:
+    $$cap_appname:
+        image: node:lts-alpine3.17
+        command: npx prisma studio --port 5555 --browser none
+        environment:
+            DATABASE_URL: $$cap_db_url
+        caproverExtra:
+            containerHttpPort: '5555'
+
+caproverOneClickApp:
+    variables:
+        - id: $$cap_db_url
+          label: Database Connection URL
+          description: Full connection URL for your database (e.g., postgres://user:password@host:5432/dbname)
+          defaultValue: postgres://user:password@host:5432/dbname
+          validRegex: /.{10,}/
+
+    instructions:
+        start: |-
+            Prisma Studio is a visual editor for your database.
+            You need to provide a valid database connection URL.
+        end: |-
+            Prisma Studio has been successfully deployed!
+            Access it at http://$$cap_appname.$$cap_root_domain
+
+    displayName: Prisma Studio
+    description: Visual editor for your database (requires external database)
+    isOfficial: false
+    documentation: https://www.prisma.io/studio

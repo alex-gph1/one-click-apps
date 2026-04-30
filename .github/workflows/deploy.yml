@@ -7,11 +7,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4.2.2
-      - uses: actions/setup-node@v4.1.0
+      - uses: actions/setup-node@v6
         with:
-          node-version: 14
-      - run: npm ci && npm run publish
+          node-version: latest
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run publish
         env:
-          GITHUB_PERSONAL_TOKEN: ${{secrets.GITHUB_PERSONAL_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

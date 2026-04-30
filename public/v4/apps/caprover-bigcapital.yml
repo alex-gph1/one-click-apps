@@ -1,0 +1,248 @@
+captainVersion: 4
+
+services:
+  $$cap_appname-webapp:
+    image: bigcapitalhq/webapp:latest
+
+  $$cap_appname-server:
+    image: bigcapitalhq/server:latest
+    caproverExtra:
+      containerHttpPort: 3000
+    environment:
+      MAIL_HOST: $$cap_mail_host
+      MAIL_USERNAME: $$cap_mail_username
+      MAIL_PASSWORD: $$cap_mail_password
+      MAIL_PORT: $$cap_mail_port
+      MAIL_SECURE: $$cap_mail_secure
+      MAIL_FROM_NAME: $$cap_mail_from_name
+      MAIL_FROM_ADDRESS: $$cap_mail_from_address
+      DB_HOST: $$cap_mysql_host
+      DB_USER: $$cap_db_user
+      DB_PASSWORD: $$cap_db_password
+      DB_CHARSET: $$cap_db_charset
+      SYSTEM_DB_NAME: $$cap_system_db_name
+      TENANT_DB_NAME_PERFIX: $$cap_tenant_db_name_perfix
+      JWT_SECRET: $$cap_jwt_secret
+      MONGODB_DATABASE_URL: $$cap_mongodb_url
+      BASE_URL: http://$$cap_appname.$$cap_root_domain
+      SIGNUP_DISABLED: $$cap_signup_disabled
+      SIGNUP_ALLOWED_DOMAINS: $$cap_signup_allowed_domains
+      SIGNUP_ALLOWED_EMAILS: $$cap_signup_allowed_emails
+      SIGNUP_EMAIL_CONFIRMATION: $$cap_signup_email_confirmation
+      API_RATE_LIMIT: $$cap_api_rate_limit
+      GOTENBERG_URL: $$cap_gotenberg_url
+      GOTENBERG_DOCS_URL: $$cap_gotenberg_docs_url
+
+  $$cap_appname-dbmigration:
+    image: bigcapitalhq/server:latest
+    caproverExtra:
+      notExposeAsWebApp: true
+      dockerfileLines:
+        - FROM bigcapitalhq/server:latest as build
+        - ARG DB_HOST
+        - ARG DB_USER
+        - ARG DB_PASSWORD
+        - ARG DB_CHARSET
+        - ARG SYSTEM_DB_HOST
+        - ARG SYSTEM_DB_NAME
+        - ARG SYSTEM_DB_USER
+        - ARG SYSTEM_DB_PASSWORD
+        - ARG SYSTEM_DB_CHARSET
+        - USER root
+        - RUN apk update && apk upgrade && apk add git
+        - RUN apk add --no-cache bash
+        - WORKDIR /app/packages/server
+        - RUN git clone https://github.com/vishnubob/wait-for-it.git
+        - CMD ./wait-for-it/wait-for-it.sh $$cap_mysql_host -- sh -c "node ./build/commands.js system:migrate:latest && node ./build/commands.js tenants:migrate:latest"
+    environment:
+      DB_HOST: $$cap_mysql_host
+      DB_USER: $$cap_db_user
+      DB_PASSWORD: $$cap_db_password
+      DB_CHARSET: $$cap_db_charset
+      SYSTEM_DB_HOST: $$cap_mysql_host
+      SYSTEM_DB_NAME: $$cap_system_db_name
+      SYSTEM_DB_USER: $$cap_system_db_user
+      SYSTEM_DB_PASSWORD: $$cap_systmem_db_password
+      SYSTEM_DB_CHARSET: $$cap_db_charset
+      TENANT_DB_NAME_PERFIX: $$cap_tenant_db_name_perfix
+
+caproverOneClickApp:
+  displayName: Bigcapital
+  isOfficial: true
+  description: Production deployment of the Bigcapital platform.
+  instructions:
+    start: |-
+      Bigcapital is deploying.
+      Please ensure that you have configured external MySQL, MongoDB, Redis (including login details if required) and Gotenberg services.
+    end: |-
+      Bigcapital has been successfully deployed.
+  variables:
+    # Required Variables:
+    - id: $$cap_db_user
+      label: Database User (Required)
+      defaultValue: bigcapital
+      required: true
+      validRegex: /.{4,}/
+    - id: $$cap_db_password
+      label: Database Password (Required)
+      defaultValue: bigcapital
+      required: true
+      validRegex: /.{4,}/
+    - id: $$cap_mysql_host #database host
+      label: MySQL Host (Required)
+      defaultValue: mysql.example.com
+      required: true
+      validRegex: /.{4,}/
+    - id: $$cap_db_charset
+      label: Database Charset (Optional)
+      defaultValue: utf8
+      required: false
+    - id: $$cap_system_db_name
+      label: System Database Name (Required)
+      required: true
+      validRegex: /.{1,}/
+    - id: $$cap_system_db_user
+      label: System Database User (Required)
+      defaultValue: root
+      required: true
+      validRegex: /.{1,}/
+    - id: $$cap_systmem_db_password
+      label: System Database Password (Required)
+      required: true
+      validRegex: /.{4,}/
+    - id: $$cap_tenant_db_name_perfix
+      label: Tenant Database Name Prefix (Required)
+      defaultValue: bigcapital_tenant_
+      required: true
+      validRegex: /.{1,}/
+    - id: $$cap_jwt_secret
+      label: JWT Secret (Required)
+      defaultValue: $$cap_gen_random_hex(40)
+      required: true
+      validRegex: /.{1,}/
+    - id: $$cap_mongodb_url
+      label: MongoDB Connection URL (Required)
+      defaultValue: mongodb://srv-captain--mongodb/bigcapital
+      required: true
+      validRegex: /.{1,}/
+    - id: $$cap_gotenberg_url
+      label: Gotenberg URL (Required)
+      defaultValue: http://srv-captain--gotenberg:3000/forms/chromium/convert/url
+      required: true
+      validRegex: /.{9,}/
+    - id: $$cap_gotenberg_docs_url
+      label: Gotenberg Docs URL (Required)
+      defaultValue: http://srv-captain--gotenberg:3000/forms/libreoffice/convert
+      required: true
+      validRegex: /.{9,}/
+    #- id: $$cap_base_url
+    #  label: Base URL (Required)
+    #  defaultValue: http://$$cap_appname.$$cap_root_domain
+    #  required: true
+    #  validRegex: /.{1,}/
+    - id: $$cap_public_proxy_port
+      label: Public Proxy Port (Optional)
+      defaultValue: 80
+      required: false
+    - id: $$cap_public_proxy_ssl_port
+      label: Public Proxy SSL Port (Optional)
+      defaultValue: 443
+      required: false
+
+    # Optional Variables:
+    - id: $$cap_mail_host
+      label: Mail Host (Optional)
+      defaultValue: ""
+      required: false
+    - id: $$cap_mail_username
+      label: Mail Username (Optional)
+      defaultValue: ""
+      required: false
+    - id: $$cap_mail_password
+      label: Mail Password (Optional)
+      defaultValue: ""
+      required: false
+    - id: $$cap_mail_port
+      label: Mail Port (Optional)
+      defaultValue: "465"
+      required: false
+    - id: $$cap_mail_secure
+      label: Mail Secure (Optional)
+      defaultValue: "SSL"
+      required: false
+    - id: $$cap_mail_from_name
+      label: Mail From Name (Optional)
+      defaultValue: Bigcapital
+      required: false
+    - id: $$cap_mail_from_address
+      label: Mail From Address (Optional)
+      defaultValue: ""
+      required: false
+    #- id: $$cap_agendash_auth_user
+    #  label: Agendash Auth User (Optional)
+    #  defaultValue: agendash
+    #  required: false
+    #- id: $$cap_agendash_auth_password
+    #  label: Agendash Auth Password (Optional)
+    #  defaultValue: 123123
+    #  required: false
+    - id: $$cap_signup_disabled
+      label: Signup Disabled (Optional)
+      defaultValue: false
+      required: false
+    - id: $$cap_signup_allowed_domains
+      label: Signup Allowed Domains (Optional)
+      defaultValue: ""
+      required: false
+    - id: $$cap_signup_allowed_emails
+      label: Signup Allowed Emails (Optional)
+      defaultValue: ""
+      required: false
+    - id: $$cap_signup_email_confirmation
+      label: Signup Email Confirmation (Optional)
+      defaultValue: false
+      required: false
+    - id: $$cap_api_rate_limit
+      label: API Rate Limit (Optional)
+      defaultValue: "120,60,600"
+      required: false
+    #- id: $$cap_exchange_rate_service
+    #  label: Exchange Rate Service (Optional)
+    #  defaultValue: open-exchange-rate
+    #  required: false
+    #- id: $$cap_open_exchange_rate_app_id
+    #  label: Open Exchange Rate App ID (Optional)
+    #  defaultValue: ""
+    #  required: false
+    #- id: $$cap_plaid_env
+    #  label: Plaid Environment (Optional)
+    #  defaultValue: sandbox
+    #  required: false
+    #- id: $$cap_plaid_client_id
+    #  label: Plaid Client ID (Optional)
+    #  defaultValue: ""
+    #  required: false
+    #- id: $$cap_plaid_secret
+    #  label: Plaid Secret (Optional)
+    #  defaultValue: ""
+    #  required: false
+    #- id: $$cap_plaid_link_webhook
+    #  label: Plaid Link Webhook (Optional)
+    #  defaultValue: ""
+    #  required: false
+    #- id: $$cap_lemonsqueezy_api_key
+    #  label: Lemonsqueezy API Key (Optional)
+    #  defaultValue: ""
+    #  required: false
+    #- id: $$cap_lemonsqueezy_store_id
+    #  label: Lemonsqueezy Store ID (Optional)
+    #  defaultValue: ""
+    #  required: false
+    #- id: $$cap_lemonsqueezy_webhook_secret
+    #  label: Lemonsqueezy Webhook Secret (Optional)
+    #  defaultValue: ""
+    #  required: false
+    #- id: $$cap_redis_username
+    #  label: Redis Username (Optional; if applicable)
+    #  defaultValue: ""
+    #  required: false

@@ -1,0 +1,52 @@
+captainVersion: 4
+services:
+    $$cap_appname:
+        image: rootpublic/node:23-bookworm-slim
+        command: npx prisma studio --port 5555 --browser none
+        environment:
+            DATABASE_URL: postgres://$$cap_db_user:$$cap_db_password@srv-captain--$$cap_appname-postgres:5432/$$cap_db_name?schema=public
+        depends_on:
+            - $$cap_appname-postgres
+        caproverExtra:
+            containerHttpPort: '5555'
+
+    $$cap_appname-postgres:
+        image: postgres:16
+        volumes:
+            - $$cap_appname-postgres-data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_USER: $$cap_db_user
+            POSTGRES_PASSWORD: $$cap_db_password
+            POSTGRES_DB: $$cap_db_name
+        caproverExtra:
+            notExposeAsWebApp: true
+
+caproverOneClickApp:
+    variables:
+        - id: $$cap_db_user
+          label: PostgreSQL User
+          defaultValue: prisma
+          validRegex: /.{1,}/
+
+        - id: $$cap_db_password
+          label: PostgreSQL Password
+          defaultValue: $$cap_gen_random_hex(16)
+          validRegex: /.{8,}/
+
+        - id: $$cap_db_name
+          label: PostgreSQL Database Name
+          defaultValue: prisma
+          validRegex: /.{1,}/
+
+    instructions:
+        start: |-
+            Prisma Studio is a visual editor for your database.
+            This one-click app will deploy Prisma Studio along with a PostgreSQL database.
+        end: |-
+            Prisma Studio has been successfully deployed!
+            Access it at http://$$cap_appname.$$cap_root_domain
+
+    displayName: Prisma Studio (with PostgreSQL)
+    description: Visual editor for your database with built-in PostgreSQL
+    isOfficial: false
+    documentation: https://www.prisma.io/studio
