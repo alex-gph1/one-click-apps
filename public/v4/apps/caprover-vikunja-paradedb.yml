@@ -1,5 +1,22 @@
 captainVersion: 4
 services:
+    $$cap_appname-init:
+        image: alpine:3.20
+        restart: 'no'
+        command:
+            - sh
+            - -c
+            - |
+                set -e
+                chown -R 1000:0 /files
+                chmod -R u+rwX /files
+                sleep 100d
+        user: root
+        volumes:
+            - $$cap_appname-files:/files
+        caproverExtra:
+            notExposeAsWebApp: true
+
     $$cap_appname:
         image: vikunja/vikunja:$$cap_vikunja_version
         environment:
@@ -15,6 +32,7 @@ services:
         volumes:
             - $$cap_appname-files:/app/vikunja/files
         depends_on:
+            - $$cap_appname-init
             - $$cap_appname-db
         caproverExtra:
             containerHttpPort: '3456'
@@ -95,6 +113,8 @@ caproverOneClickApp:
             Persistent data:
             - Vikunja files: $$cap_appname-files
             - ParadeDB data: $$cap_appname-db-data
+
+            An init helper sets the Vikunja files volume ownership to UID 1000 so the Vikunja container can write uploaded files and attachments.
 
             ParadeDB runs as the PostgreSQL backend and is not exposed as a web app.
 
