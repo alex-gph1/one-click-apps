@@ -26,7 +26,7 @@ services:
             POSTGRES_PASSWORD: $$cap_db_password
             POSTGRES_DB: $$cap_db_name
         volumes:
-            - $$cap_appname-db-data:/var/lib/postgresql/data
+            - $$cap_appname-db-data:/var/lib/postgresql
         caproverExtra:
             notExposeAsWebApp: true
 
@@ -41,7 +41,7 @@ caproverOneClickApp:
         - id: $$cap_paradedb_version
           label: ParadeDB Version
           defaultValue: 0.23.1-pg18
-          description: ParadeDB Docker image tag. This default uses PostgreSQL 18.
+          description: ParadeDB Docker image tag. This default uses PostgreSQL 18, which requires the data volume at /var/lib/postgresql.
           validRegex: /.{1,}/
 
         - id: $$cap_public_url
