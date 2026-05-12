@@ -52,7 +52,7 @@ services:
     $$cap_appname-db:
         image: postgres:$$cap_postgres_version
         volumes:
-            - $$cap_appname-db-data:/var/lib/postgresql/data
+            - $$cap_appname-db-data:/var/lib/postgresql
         restart: unless-stopped
         environment:
             POSTGRES_DB: $$cap_postgres_db
@@ -75,8 +75,8 @@ caproverOneClickApp:
           validRegex: /.{1,}/
         - id: $$cap_postgres_version
           label: PostgreSQL Version
-          description: Docker tag for the postgres image.
-          defaultValue: 16-alpine
+          description: Docker tag for the postgres image. PostgreSQL 18+ stores data under /var/lib/postgresql/<major>/docker, so this template mounts /var/lib/postgresql.
+          defaultValue: 18-alpine
           validRegex: /.{1,}/
         - id: $$cap_postgres_db
           label: PostgreSQL Database
@@ -96,14 +96,13 @@ caproverOneClickApp:
           defaultValue: $$cap_gen_random_hex(64)
           validRegex: /.{32,}/
         - id: $$cap_transcription_service_url
-          label: Transcription Service URL
-          description: Remote transcription endpoint used by Vexa Lite.
-          defaultValue: https://transcription.vexa.ai/v1/audio/transcriptions
+          label: Vexa-Compatible Transcription Service URL
+          description: Required. Use a self-hosted Vexa transcription service or an adapter exposing Vexa's OpenAI Whisper-compatible /v1/audio/transcriptions contract.
           validRegex: /^https?:\/\/.+/
         - id: $$cap_transcription_service_token
           label: Transcription Service Token
-          description: Required API token for the transcription service.
-          validRegex: /.{1,}/
+          description: Bearer token for the transcription service. Leave empty only if your compatible service is unauthenticated.
+          defaultValue: ''
         - id: $$cap_openai_api_key
           label: OpenAI API Key
           description: Optional. Required only for Vexa interactive TTS features.
@@ -142,7 +141,9 @@ caproverOneClickApp:
             Vexa Lite deploys the Vexa API gateway, bot runtime, internal Redis, and supporting services in one container.
             This one-click app also deploys the standalone Vexa Dashboard and an internal PostgreSQL database.
 
-            You must provide a valid TRANSCRIPTION_SERVICE_TOKEN. Without it, Vexa Lite will fail its startup transcription check unless you set Skip Startup Transcription Check to true.
+            You must provide a Vexa-compatible transcription endpoint. To avoid the Vexa-hosted API, self-host Vexa's transcription service or run an adapter that accepts Vexa's OpenAI Whisper-compatible multipart requests and returns text plus timestamped segments.
+
+            Direct OpenAI, Google Cloud Speech-to-Text, or OpenRouter transcription endpoints are not reliable drop-in replacements for this template. Vexa sends provider-specific fields in some paths and expects a Vexa-style response with timestamped segments.
 
             The dashboard will be exposed at https://$$cap_appname.$$cap_root_domain.
             The API gateway will be exposed at https://$$cap_appname-api.$$cap_root_domain.
@@ -160,5 +161,6 @@ caproverOneClickApp:
     description: Vexa Lite backend with Vexa Dashboard, internal Postgres, persistent recordings, and WebSocket support.
     documentation: |-
         Vexa Lite docs: https://github.com/Vexa-ai/vexa/blob/main/docs/vexa-lite-deployment.mdx
+        Self-hosted transcription service: https://github.com/Vexa-ai/vexa/tree/main/services/transcription-service
         Dashboard docs: https://github.com/Vexa-ai/Vexa-Dashboard
         Deployment configs: https://github.com/Vexa-ai/vexa-lite-deploy
