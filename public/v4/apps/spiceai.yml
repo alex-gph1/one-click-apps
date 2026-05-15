@@ -30,7 +30,7 @@ services:
         caproverExtra:
             dockerfileLines:
                 - FROM debian:trixie-slim AS spicepod
-                - ARG SPICEPOD_NAME=$$cap_spicepod_name
+                - ARG SPICEPOD_NAME=$$cap_appname
                 - |-
                     RUN mkdir -p /app && cat > /app/spicepod.yaml <<EOF
                     version: v1beta1
@@ -61,12 +61,6 @@ caproverOneClickApp:
           defaultValue: $$cap_gen_random_hex(32)
           description: API key required for Spice HTTP and Flight SQL requests. Health and readiness endpoints remain public.
           validRegex: /.{16,}/
-
-        - id: $$cap_spicepod_name
-          label: Spicepod Name
-          defaultValue: $$cap_appname
-          description: Name written into the starter spicepod.yaml. Replace the generated spicepod with your own configuration for real datasets, catalogs, models, or tools.
-          validRegex: /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/
 
     instructions:
         start: |-

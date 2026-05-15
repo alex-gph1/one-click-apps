@@ -20,7 +20,7 @@ services:
     $$cap_appname:
         image: vikunja/vikunja:$$cap_vikunja_version
         environment:
-            VIKUNJA_SERVICE_PUBLICURL: $$cap_public_url
+            VIKUNJA_SERVICE_PUBLICURL: https://$$cap_appname.$$cap_root_domain/
             VIKUNJA_SERVICE_SECRET: $$cap_service_secret
             VIKUNJA_SERVICE_TIMEZONE: $$cap_timezone
             VIKUNJA_SERVICE_ENABLEREGISTRATION: $$cap_enable_registration
@@ -62,12 +62,6 @@ caproverOneClickApp:
           description: ParadeDB Docker image tag. This default uses PostgreSQL 18, which requires the data volume at /var/lib/postgresql.
           validRegex: /.{1,}/
 
-        - id: $$cap_public_url
-          label: Vikunja Public URL
-          defaultValue: https://$$cap_appname.$$cap_root_domain/
-          description: Full public URL for Vikunja, including scheme and trailing slash.
-          validRegex: /^https?:\/\/.+\/$/
-
         - id: $$cap_service_secret
           label: Service Secret
           defaultValue: $$cap_gen_random_hex(32)
@@ -108,7 +102,7 @@ caproverOneClickApp:
         end: |-
             Vikunja has been deployed.
 
-            Open $$cap_public_url and create the first account. If this is a private instance, set Enable Registration to false after the initial account exists.
+            Open https://$$cap_appname.$$cap_root_domain/ and create the first account. If this is a private instance, set Enable Registration to false after the initial account exists.
 
             Persistent data:
             - Vikunja files: $$cap_appname-files

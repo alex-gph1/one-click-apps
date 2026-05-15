@@ -145,8 +145,7 @@ caproverOneClickApp:
 
             Direct OpenAI, Google Cloud Speech-to-Text, or OpenRouter transcription endpoints are not reliable drop-in replacements for this template. Vexa sends provider-specific fields in some paths and expects a Vexa-style response with timestamped segments.
 
-            The dashboard will be exposed at https://$$cap_appname.$$cap_root_domain.
-            The API gateway will be exposed at https://$$cap_appname-api.$$cap_root_domain.
+            The dashboard and API gateway URLs are inferred from the app name and CapRover root domain during deployment.
         end: |-
             Vexa Lite and Vexa Dashboard have been deployed.
 

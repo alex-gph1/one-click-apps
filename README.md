@@ -3,6 +3,7 @@
 This is a public, personal CapRover one-click app repository. It is maintained primarily for our own deployments and experiments, but it is open for anyone to inspect, fork, or use as a starting point.
 
 This is not the official CapRover app catalog. Treat every template as something to review before use:
+
 - Some apps may not work as-is.
 - Some apps may be outdated when upstream images or application requirements change.
 - Some apps are only partially tested.
@@ -13,12 +14,13 @@ Do not commit real credentials, tokens, private domains, customer data, or deplo
 Files under `misc/docker compose/` are reference material for development and template conversion. They may contain placeholder or intentionally insecure sample defaults; review and replace them before running anything outside a disposable test environment.
 
 ### How to create a one-click app (as of v1.8.0):
-First, have a look at [this simple example](https://github.com/caprover/one-click-apps/blob/master/public/v4/apps/privatebin.yml). Now, read on for more details:
 
+First, have a look at [this simple example](https://github.com/caprover/one-click-apps/blob/master/public/v4/apps/privatebin.yml). Now, read on for more details:
 
 - Find/create a docker-compose file for the app you're interested in.
 - Add `captainVersion: 4` to the very top of the yaml file.
 - Add this section to the end of the yaml file:
+
 ```yaml
 caproverOneClickApp:
     variables:
@@ -46,15 +48,19 @@ caproverOneClickApp:
 ```
 
 ### Variables:
+
 - Variables are prefixed with `$$cap`
 - Variables can be anywhere in the content and they will be replaced by what user enters
-- There are 3 special variables that are built-in for all oneclick apps: `$$cap_appname`, `$$cap_root_domain`, and `$$cap_gen_random_hex(length)`. For example, if your app needs environment variables with the URL value of the app, you can use `$$cap_appname.$$cap_root_domain` which resolves to something like `myappname.rootdomain.com`. Also If you need a default password, you can use `$$cap_gen_random_hex(10)`
+- There are 3 special variables that are built-in for all oneclick apps: `$$cap_appname`, `$$cap_root_domain`, and `$$cap_gen_random_hex(length)`. For example, if your app needs environment variables with the URL value of the app, you can use `$$cap_appname.$$cap_root_domain` in the service definition or final deployment instructions, which resolves to something like `myappname.rootdomain.com`. Also If you need a default password, you can use `$$cap_gen_random_hex(10)`.
+- Do not use `$$cap_appname` or `$$cap_root_domain` in variable `defaultValue`, `label`, `description`, or `instructions.start`. CapRover shows those setup-stage fields before these built-ins are expanded, so users see the literal placeholders. Infer app-domain values in the service definition or show them in `instructions.end` instead.
+- Do not pass quote-bearing variable defaults into service definitions. CapRover substitutes variable values into generated JSON before parsing it, so defaults like `["matrix.org"]` can become invalid JSON when inserted into a string. Prefer hard-coded service values or quote-free variables.
 - Each custom variable must have `id`, `label`. They could also have `defaultValue`, `validRegex`, `description`.
 - IMPORTANT: by default, fields are not required to be filled. If validRegex is not set, the field can be set as empty and ignored by the user.
 
-
 ### Services:
+
 Even though, the format used by One Click apps is Docker Compose, not all parameters defined in Docker Compose file are parsed out by CapRover. Only the following parameters are used:
+
 - `image`
 - `environment`
 - `ports`
@@ -67,32 +73,36 @@ Even though, the format used by One Click apps is Docker Compose, not all parame
 Other parameters are currently being ignored by CapRover. If you need a particular parameter, please file an issue, and we'll add it to the respected list.
 
 Aside from the Docker Compose template, services have a special subsection specific to CapRover called `caproverExtra` which contains service specific parameters that are only available via CapRover and not docker compose. Currently this field can take the following variables:
+
 - `dockerfileLines` which is a multiline variable, and can be used instead of `image` property in the service. You must delete the `image` property if you want to use this parameter. NOTE: `dockerfileLines` should be used in rare cases where other methods cannot work. Prefer `command` where possible.
 - `containerHttpPort` is useful when the underlying service uses a custom port for HTTP. If not provided, the default will be `"80"`
 - `notExposeAsWebApp` can be set to `"true"` when the underlying service is not an HTTP app. This is useful for databases and other internally used services.
 - `websocketSupport` can be set to `"true"` to automatically enable Websocket Support. Only supported in versions 1.12+
 
 ### Icon
+
 - Make sure you add an app icon to the logos directory!
 
-
----------
-
+---
 
 ## Test your One Click Apps
+
 After creating your One-Click app yaml file, you need to test it before creating a Pull Request. Here is how you test it:
+
 - Login to your CapRover dashboard
 - Go to **apps** and click on **One-Click Apps/Databases**
 - Select **>> TEMPLATE <<** at the bottom of the dropdown list
 - Copy and paste your YAML into the text area, and click **NEXT**.
 - Enter values and make sure it's working as expected.
 
----------
+---
 
 ## Build your own one-click app repository
+
 CapRover supports having multiple one-click app repositories. You can add repository URLs to the one-click app page. The official CapRover catalog is available as `https://oneclickapps.caprover.com`; this repository is a separate public repository for our own templates.
 
 To create your own repository:
+
 - Fork this repository
 - Delete all existing apps (to avoid duplicate apps), and add your own apps.
 - Run `pnpm install --frozen-lockfile`
@@ -100,26 +110,30 @@ To create your own repository:
 - Run `pnpm run format`
 - Run `pnpm run build`
 - Now you can host the static content placed in `./dist` directory anywhere you want. The official CapRover catalog uses [GitHub Pages](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site), and you can do the same. Make sure to update [CNAME](https://github.com/caprover/one-click-apps/blob/master/public/CNAME) to your own URL if you decide to do so.
- 
+
 ### Hosting your own repository on a CapRover instance
+
 Your own private repository can be hosted on a CapRover instance with the newly-added [captain-definition](/captain-definition) file.
 
 To set up your private repository on CapRover:
+
 - Follow the above steps to create your own repository. Update your fork from the upstream master branch if you don't have `captain-definition` in your fork's root directory
 - In your CapRover dashboard, go to **apps**. Under **Create A New App**, name it something relevant such as `caprover-apps`, leave the **Has Persistent Data** checkbox unchecked, and click Create New App.
 - In the new app, go to **Deployment**, scroll down to **Method 3: Deploy from Github/Bitbucket/Gitlab**, put the Git url for your forked repository and other requested data, click **Save and Update**, and then **Force Build**.
-  - Alternatively, an instance of your private repository can be created by making a tarball (`.tar`) of the contents of the one-click-apps repo and uploading it under **Method 2: Tarball**.
+    - Alternatively, an instance of your private repository can be created by making a tarball (`.tar`) of the contents of the one-click-apps repo and uploading it under **Method 2: Tarball**.
 - Check that the domain listed under HTTP Settings shows the `Welcome to nginx!` page.
 - You should be able to add another domain to this CapRover site, and add it as a third party repository using the below instructions.
 
 ### Third party One Click Apps
 
 In order to add a third party repository:
--   Login to your CapRover dashboard
--   Go to **apps** and click on **One-Click Apps/Databases** and scroll down to the bottom
--   Under **3rd party repositories:** copy the URL, (for example: `https://Awes0meHub.github.io/caprover-one-click-apps`) and paste it in to the text box
--   Click the **_Connect New Repository_** button
+
+- Login to your CapRover dashboard
+- Go to **apps** and click on **One-Click Apps/Databases** and scroll down to the bottom
+- Under **3rd party repositories:** copy the URL, (for example: `https://Awes0meHub.github.io/caprover-one-click-apps`) and paste it in to the text box
+- Click the **_Connect New Repository_** button
 
 #### 3rd party repositories
--   Awes0meHub: [Github](https://github.com/caproverhub/caprover-one-click-apps) repository: `https://caproverhub.github.io/caprover-one-click-apps`
--   Jordan-hall: [Github](https://github.com/Jordan-Hall/caprover-one-click-apps) repository: `https://oneclickapps.libertyware.io`
+
+- Awes0meHub: [Github](https://github.com/caproverhub/caprover-one-click-apps) repository: `https://caproverhub.github.io/caprover-one-click-apps`
+- Jordan-hall: [Github](https://github.com/Jordan-Hall/caprover-one-click-apps) repository: `https://oneclickapps.libertyware.io`
