@@ -2,7 +2,7 @@ captainVersion: 4
 
 services:
     $$cap_appname:
-        image: vexaai/vexa-dashboard:$$cap_vexa_dashboard_tag
+        image: vexaai/dashboard:$$cap_vexa_dashboard_tag
         depends_on:
             - $$cap_appname-api
         restart: unless-stopped
@@ -70,8 +70,8 @@ caproverOneClickApp:
           validRegex: /.{1,}/
         - id: $$cap_vexa_dashboard_tag
           label: Vexa Dashboard Image Tag
-          description: Docker tag for vexaai/vexa-dashboard. Use an immutable tag for production, or latest to follow upstream releases.
-          defaultValue: latest
+          description: Docker tag for vexaai/dashboard. Use an immutable tag for production, or latest to follow upstream releases.
+          defaultValue: 0.10.6
           validRegex: /.{1,}/
         - id: $$cap_postgres_version
           label: PostgreSQL Version
@@ -139,7 +139,7 @@ caproverOneClickApp:
     instructions:
         start: |-
             Vexa Lite deploys the Vexa API gateway, bot runtime, internal Redis, and supporting services in one container.
-            This one-click app also deploys the standalone Vexa Dashboard and an internal PostgreSQL database.
+            This one-click app also deploys the maintained Vexa Dashboard and an internal PostgreSQL database.
 
             You must provide a Vexa-compatible transcription endpoint. To avoid the Vexa-hosted API, self-host Vexa's transcription service or run an adapter that accepts Vexa's OpenAI Whisper-compatible multipart requests and returns text plus timestamped segments.
 
@@ -161,5 +161,5 @@ caproverOneClickApp:
     documentation: |-
         Vexa Lite docs: https://github.com/Vexa-ai/vexa/blob/main/docs/vexa-lite-deployment.mdx
         Self-hosted transcription service: https://github.com/Vexa-ai/vexa/tree/main/services/transcription-service
-        Dashboard docs: https://github.com/Vexa-ai/Vexa-Dashboard
+        Dashboard source: https://github.com/Vexa-ai/vexa/tree/main/services/dashboard
         Deployment configs: https://github.com/Vexa-ai/vexa-lite-deploy
