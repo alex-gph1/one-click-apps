@@ -62,7 +62,7 @@ async function makeAppList(appFilenames) {
         name: appName,
         displayName: displayName,
         description: description,
-        isOfficial: appData.isOfficial === 'true',
+        isOfficial: appData.isOfficial === true || appData.isOfficial === 'true',
         logoUrl: `${appName}.png`,
       });
     } else {
